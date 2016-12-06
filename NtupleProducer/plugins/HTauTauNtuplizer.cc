@@ -49,6 +49,12 @@
 #include <DataFormats/JetReco/interface/PFJetCollection.h>
 #include <DataFormats/PatCandidates/interface/PackedCandidate.h>
 
+#include "DataFormats/L1Trigger/interface/EGamma.h"
+#include "DataFormats/L1Trigger/interface/Tau.h"
+#include "DataFormats/L1Trigger/interface/Jet.h"
+#include "DataFormats/L1Trigger/interface/Muon.h"
+#include "DataFormats/L1Trigger/interface/EtSum.h"
+
 #include <DataFormats/Math/interface/LorentzVector.h>
 #include <DataFormats/VertexReco/interface/Vertex.h>
 #include <DataFormats/Common/interface/MergeableCounter.h>
@@ -120,6 +126,7 @@
    bool writeFatJets = true;
    bool writeSoftLep = false;
    bool DEBUG = false;
+   bool writeStage2 = true;
  }
 
 using namespace std;
@@ -154,7 +161,9 @@ class HTauTauNtuplizer : public edm::EDAnalyzer {
   //virtual void FillCandidate(const pat::CompositeCandidate& higgs, bool evtPass, const edm::Event&, const Int_t CRflag);
   //virtual void FillPhoton(const pat::Photon& photon);
   int FillJet(const edm::View<pat::Jet>* jet, const edm::Event&, JetCorrectionUncertainty*);
-  void FillFatJet(const edm::View<pat::Jet>* fatjets, const edm::Event&);
+  int* FillStage2(const BXVector<l1t::Tau>* taus, const BXVector<l1t::EGamma>* egs, const BXVector<l1t::Muon>* muons, const BXVector<l1t::Jet>* jets, const edm::Event& event);
+  
+void FillFatJet(const edm::View<pat::Jet>* fatjets, const edm::Event&);
   void FillSoftLeptons(const edm::View<reco::Candidate> *dauhandler, const edm::Event& event, const edm::EventSetup& setup, bool theFSR, const edm::View<pat::Jet>* jets);
   //void FillbQuarks(const edm::Event&);
   void FillGenInfo(const edm::Event&);
@@ -222,7 +231,10 @@ class HTauTauNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::MergeableCounter> thePassTag;
   edm::EDGetTokenT<LHEEventProduct> theLHEPTag;
   edm::EDGetTokenT<reco::BeamSpot> beamSpotTag;
-
+  edm::EDGetTokenT<BXVector<l1t::Tau> > theStage2TauTag;
+  edm::EDGetTokenT<BXVector<l1t::EGamma> > theStage2EGammaTag;
+  edm::EDGetTokenT<BXVector<l1t::Muon> > theStage2MuonTag;
+  edm::EDGetTokenT<BXVector<l1t::Jet> > theStage2JetTag;
   //flags
   //static const int nOutVars =14;
   bool applyTrigger;    // Only events passing trigger
@@ -233,7 +245,7 @@ class HTauTauNtuplizer : public edm::EDAnalyzer {
   Int_t Nevt_Gen;
   Int_t Nevt_PassTrigger;
   Int_t Npairs;
-
+  Int_t *stage2objNumber; //0 = taus, 1 = eg, 2 = jets, 3 = muons  
   //Event Output variables
   ULong64_t _indexevents;
   Int_t _runNumber;
@@ -255,6 +267,7 @@ class HTauTauNtuplizer : public edm::EDAnalyzer {
   Float_t _lheHt;
   Int_t   _lheNOutPartons;
   Int_t   _lheNOutB;
+  Int_t   _lheNOutC;
   Float_t _npu;
   Int_t   _PUNumInteractions;
   Float_t _PUReweight;
@@ -275,6 +288,9 @@ class HTauTauNtuplizer : public edm::EDAnalyzer {
   std::vector<Float_t> _mothers_py;
   std::vector<Float_t> _mothers_pz;
   std::vector<Float_t> _mothers_e;
+  std::vector<Long64_t> _mothers_trgSeparateMatch; // are the two legs matched to different HLT objs?
+                                                   // stored bitwise for HLT paths as done for daughters_trgMatch
+
   
   // reco leptons
   //std::vector<TLorentzVector> _daughters;
@@ -538,6 +554,47 @@ class HTauTauNtuplizer : public edm::EDAnalyzer {
   std::vector<Float_t> _daughters_pcaGenPV_y;
   std::vector<Float_t> _daughters_pcaGenPV_z;
 
+  Int_t _stage2_tauN;
+  std::vector<Float_t> _stage2_tauEt;
+  std::vector<Float_t> _stage2_tauEta;
+  std::vector<Float_t> _stage2_tauPhi;
+  std::vector<short int> _stage2_tauIEt;
+  std::vector<short int> _stage2_tauIEta;
+  std::vector<short int> _stage2_tauIPhi;
+  std::vector<short int> _stage2_tauIso;
+  std::vector<short int> _stage2_tauBx;
+
+  Int_t _stage2_egN;
+  std::vector<Float_t> _stage2_egEt;
+  std::vector<Float_t> _stage2_egEta;
+  std::vector<Float_t> _stage2_egPhi;
+  std::vector<short int> _stage2_egIEt;
+  std::vector<short int> _stage2_egIEta;
+  std::vector<short int> _stage2_egIPhi;
+  std::vector<short int> _stage2_egIso;
+  std::vector<short int> _stage2_egBx;
+
+  Int_t _stage2_jetN;
+  std::vector<Float_t> _stage2_jetEt;
+  std::vector<Float_t> _stage2_jetEta;
+  std::vector<Float_t> _stage2_jetPhi;
+  std::vector<short int> _stage2_jetIEt;
+  std::vector<short int> _stage2_jetIEta;
+  std::vector<short int> _stage2_jetIPhi;
+  std::vector<short int> _stage2_jetBx;
+
+  Int_t _stage2_muonN;
+  std::vector<Float_t> _stage2_muonEt;
+  std::vector<Float_t> _stage2_muonEta;
+  std::vector<Float_t> _stage2_muonPhi;
+  std::vector<short int> _stage2_muonIEt;
+  std::vector<short int> _stage2_muonIEta;
+  std::vector<short int> _stage2_muonIPhi;
+  std::vector<short int> _stage2_muonChg;
+  std::vector<short int> _stage2_muonIso;
+  std::vector<short int> _stage2_muonQual;
+  std::vector<short int> _stage2_muonTfMuonIdx;
+  std::vector<short int> _stage2_muonBx;
 
   //Jets variables
   Int_t _numberOfJets;
@@ -605,6 +662,10 @@ class HTauTauNtuplizer : public edm::EDAnalyzer {
   //std::vector<Float_t> _genH_py;
   //std::vector<Float_t> _genH_pz;
   //std::vector<Float_t> _genH_e;
+
+  // not a output tree branch, but used to assess object overlap in trg match
+  // use as vTrgMatchedToDau_idx.at(idaughter).at(idxHLTPath)
+  std::vector<std::vector<int>> vTrgMatchedToDau_idx;
 };
 
 const int HTauTauNtuplizer::ntauIds; // definition of static member
@@ -635,7 +696,11 @@ HTauTauNtuplizer::HTauTauNtuplizer(const edm::ParameterSet& pset) : reweight(),
   theTotTag            (consumes<edm::MergeableCounter, edm::InLumi>     (pset.getParameter<edm::InputTag>("totCollection"))),
   thePassTag           (consumes<edm::MergeableCounter, edm::InLumi>     (pset.getParameter<edm::InputTag>("passCollection"))),
   theLHEPTag           (consumes<LHEEventProduct>                        (pset.getParameter<edm::InputTag>("lhepCollection"))),
-  beamSpotTag          (consumes<reco::BeamSpot>                         (pset.getParameter<edm::InputTag>("beamSpot")))
+  beamSpotTag          (consumes<reco::BeamSpot>                         (pset.getParameter<edm::InputTag>("beamSpot"))),
+  theStage2TauTag      (consumes<BXVector<l1t::Tau>>                     (pset.getParameter<edm::InputTag>("stage2TauCollection"))),
+  theStage2EGammaTag   (consumes<BXVector<l1t::EGamma>>                  (pset.getParameter<edm::InputTag>("stage2EGammaCollection"))),
+  theStage2MuonTag     (consumes<BXVector<l1t::Muon>>                    (pset.getParameter<edm::InputTag>("stage2MuonCollection"))),
+  theStage2JetTag      (consumes<BXVector<l1t::Jet>>                     (pset.getParameter<edm::InputTag>("stage2JetCollection")))
 
  {
   theFileName = pset.getUntrackedParameter<string>("fileName");
@@ -712,6 +777,7 @@ void HTauTauNtuplizer::Initialize(){
   _mothers_py.clear();
   _mothers_pz.clear();
   _mothers_e.clear();
+  _mothers_trgSeparateMatch.clear();
   
   //_daughters.clear();
   if(DEBUG){
@@ -955,6 +1021,7 @@ void HTauTauNtuplizer::Initialize(){
   _lheHt=0;
   _lheNOutPartons=0;
   _lheNOutB=0;
+  _lheNOutC=0;
   _npu=0.;
   _PUNumInteractions=0;
   _PUReweight=0.;
@@ -964,6 +1031,49 @@ void HTauTauNtuplizer::Initialize(){
   _MC_weight_scale_muF2=0.;
   _MC_weight_scale_muR0p5=0.;
   _MC_weight_scale_muR2=0.;
+
+  _stage2_tauN = 0;
+  _stage2_tauEt.clear();
+  _stage2_tauEta.clear();
+  _stage2_tauPhi.clear();
+  _stage2_tauIEt.clear();
+  _stage2_tauIEta.clear();
+  _stage2_tauIPhi.clear();
+  _stage2_tauIso.clear();
+  _stage2_tauBx.clear();
+
+  _stage2_egN = 0;
+  _stage2_egEt.clear();
+  _stage2_egEta.clear();
+  _stage2_egPhi.clear();
+  _stage2_egIEt.clear();
+  _stage2_egIEta.clear();
+  _stage2_egIPhi.clear();
+  _stage2_egIso.clear();
+  _stage2_egBx.clear();
+
+  _stage2_jetN = 0;
+  _stage2_jetEt.clear();
+  _stage2_jetEta.clear();
+  _stage2_jetPhi.clear();
+  _stage2_jetIEt.clear();
+  _stage2_jetIEta.clear();
+  _stage2_jetIPhi.clear();
+  _stage2_jetBx.clear();
+
+  _stage2_muonN = 0;
+  _stage2_muonEt.clear();
+  _stage2_muonEta.clear();
+  _stage2_muonPhi.clear();
+  _stage2_muonIEt.clear();
+  _stage2_muonIEta.clear();
+  _stage2_muonIPhi.clear();
+  _stage2_muonBx.clear();
+  _stage2_muonChg.clear();
+  _stage2_muonIso.clear();
+  _stage2_muonQual.clear();
+  _stage2_muonTfMuonIdx.clear();
+
 
 //  _jets.clear();
   _jets_px.clear();
@@ -1028,6 +1138,9 @@ void HTauTauNtuplizer::Initialize(){
   //_genH_py.clear();
   //_genH_pz.clear();
   //_genH_e.clear();
+
+  // not a tree var, but has to be filled once per daughter - reset here
+  vTrgMatchedToDau_idx.clear();
 }
 
 void HTauTauNtuplizer::beginJob(){
@@ -1061,6 +1174,7 @@ void HTauTauNtuplizer::beginJob(){
   myTree->Branch("mothers_py",&_mothers_py);
   myTree->Branch("mothers_pz",&_mothers_pz);
   myTree->Branch("mothers_e",&_mothers_e);
+  myTree->Branch("mothers_trgSeparateMatch", &_mothers_trgSeparateMatch);
   if(DEBUG){
   myTree->Branch("trigger_name",&_trigger_name);
   myTree->Branch("trigger_accept",&_trigger_accept);
@@ -1118,6 +1232,7 @@ void HTauTauNtuplizer::beginJob(){
     myTree->Branch("lheHt",&_lheHt,"lheHt/F");  
     myTree->Branch("lheNOutPartons", &_lheNOutPartons, "lheNOutPartons/I");
     myTree->Branch("lheNOutB", &_lheNOutB, "lheNOutB/I");
+    myTree->Branch("lheNOutC", &_lheNOutC, "lheNOutC/I");
     myTree->Branch("aMCatNLOweight",&_aMCatNLOweight,"aMCatNLOweight/F");    
     myTree->Branch("genpart_px", &_genpart_px);
     myTree->Branch("genpart_py", &_genpart_py);
@@ -1300,6 +1415,50 @@ void HTauTauNtuplizer::beginJob(){
     myTree->Branch("daughters_pcaGenPV_z",&_daughters_pcaGenPV_z);
   }
 
+  myTree->Branch("stage2_tauN",&_stage2_tauN,"Stage2tausNumber/I");
+  myTree->Branch("stage2_tauEt",&_stage2_tauEt);
+  myTree->Branch("stage2_tauEta",&_stage2_tauEta);
+  myTree->Branch("stage2_tauPhi",&_stage2_tauPhi);
+  myTree->Branch("stage2_tauIEt",&_stage2_tauIEt);
+  myTree->Branch("stage2_tauIEta",&_stage2_tauIEta);
+  myTree->Branch("stage2_tauIPhi",&_stage2_tauIPhi);
+  myTree->Branch("stage2_tauIso",&_stage2_tauIso);
+  myTree->Branch("stage2_tauBx",&_stage2_tauBx);
+
+  myTree->Branch("stage2_egN",&_stage2_egN,"Stage2egNumber/I");
+  myTree->Branch("stage2_egEt",&_stage2_egEt);
+  myTree->Branch("stage2_egEta",&_stage2_egEta);
+  myTree->Branch("stage2_egPhi",&_stage2_egPhi);
+  myTree->Branch("stage2_egIEt",&_stage2_egIEt);
+  myTree->Branch("stage2_egIEta",&_stage2_egIEta);
+  myTree->Branch("stage2_egIPhi",&_stage2_egIPhi);
+  myTree->Branch("stage2_egIso",&_stage2_egIso);
+  myTree->Branch("stage2_egBx",&_stage2_egBx);
+
+
+  myTree->Branch("stage2_jetN",&_stage2_jetN,"Stage2jetsNumber/I");
+  myTree->Branch("stage2_jetEt",&_stage2_jetEt);
+  myTree->Branch("stage2_jetEta",&_stage2_jetEta);
+  myTree->Branch("stage2_jetPhi",&_stage2_jetPhi);
+  myTree->Branch("stage2_jetIEt",&_stage2_jetIEt);
+  myTree->Branch("stage2_jetIEta",&_stage2_jetIEta);
+  myTree->Branch("stage2_jetIPhi",&_stage2_jetIPhi);
+  myTree->Branch("stage2_jetBx",&_stage2_jetBx);
+
+  myTree->Branch("stage2_muonN",&_stage2_muonN,"Stage2muonsNumber/I");
+  myTree->Branch("stage2_muonEt",&_stage2_muonEt);
+  myTree->Branch("stage2_muonEta",&_stage2_muonEta);
+  myTree->Branch("stage2_muonPhi",&_stage2_muonPhi);
+  myTree->Branch("stage2_muonIEt",&_stage2_muonIEt);
+  myTree->Branch("stage2_muonIEta",&_stage2_muonIEta);
+  myTree->Branch("stage2_muonIPhi",&_stage2_muonIPhi);
+  myTree->Branch("stage2_muonChg",&_stage2_muonChg);
+  myTree->Branch("stage2_muonIso",&_stage2_muonIso);
+  myTree->Branch("stage2_muonQual",&_stage2_muonQual);
+  myTree->Branch("stage2_muonTfMuonIdx",&_stage2_muonTfMuonIdx);
+  myTree->Branch("stage2_muonBx",&_stage2_muonBx);
+
+
   myTree->Branch("JetsNumber",&_numberOfJets,"JetsNumber/I");
   myTree->Branch("jets_px",&_jets_px);
   myTree->Branch("jets_py",&_jets_py);
@@ -1390,8 +1549,7 @@ Int_t HTauTauNtuplizer::FindCandIndex(const reco::Candidate& cand,Int_t iCand=0)
 void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& eSetup)
 {
   Initialize();
-
-  findPrimaryVertices(event, eSetup);
+  if (doCPVariables) findPrimaryVertices(event, eSetup);
   
   Handle<vector<reco::Vertex> >  vertexs;
   //event.getByLabel("offlineSlimmedPrimaryVertices",vertex);
@@ -1451,6 +1609,7 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
       double lheHt = 0.;
       int lheNOutPartons = 0;
       int lheNOutB = 0;
+      int lheNOutC = 0;
       size_t numParticles = lheParticles.size();
       for ( size_t idxParticle = 0; idxParticle < numParticles; ++idxParticle ) {
         int absPdgId = TMath::Abs(lheEvent.IDUP[idxParticle]);
@@ -1460,11 +1619,13 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
             lheHt += TMath::Sqrt((lheParticles[idxParticle][0])*(lheParticles[idxParticle][0]) + (lheParticles[idxParticle][1])*(lheParticles[idxParticle][1])); // first entry is px, second py
             ++lheNOutPartons;
             if (absPdgId == 5) ++lheNOutB ;
+            if (absPdgId == 4) ++lheNOutC ;
         }
       }
        _lheHt = lheHt;
        _lheNOutPartons = lheNOutPartons;
        _lheNOutB = lheNOutB;
+       _lheNOutC = lheNOutC;
      //cout<<"lheHt = "<<lheHt<<endl;
     }
     //else cout << "LHE product not found" << endl;
@@ -1481,6 +1642,10 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
   edm::Handle<edm::View<pat::CompositeCandidate>>candHandle;
   edm::Handle<edm::View<reco::Candidate>>dauHandle;
   edm::Handle<edm::View<pat::Jet>>jetHandle;
+  edm::Handle<BXVector<l1t::Tau>>stage2TauHandle;
+  edm::Handle<BXVector<l1t::EGamma>>stage2EGammaHandle;
+  edm::Handle<BXVector<l1t::Muon>>stage2MuonHandle;
+  edm::Handle<BXVector<l1t::Jet>>stage2JetHandle; 
   edm::Handle<edm::View<pat::Jet>>fatjetHandle;
   edm::Handle<pat::METCollection> metHandle;
   edm::Handle<pat::METCollection> PUPPImetHandle;
@@ -1495,6 +1660,10 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
 
   event.getByToken(theCandTag,candHandle);
   event.getByToken(theJetTag,jetHandle);
+  event.getByToken(theStage2TauTag,stage2TauHandle);
+  event.getByToken(theStage2EGammaTag,stage2EGammaHandle);
+  event.getByToken(theStage2MuonTag,stage2MuonHandle);
+  event.getByToken(theStage2JetTag,stage2JetHandle);
   event.getByToken(theFatJetTag,fatjetHandle);
   event.getByToken(theLepTag,dauHandle);
   
@@ -1548,7 +1717,12 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
   const edm::View<pat::Jet>* fatjets = fatjetHandle.product();
   const pat::MET &met = metHandle->front();
   const pat::MET &PUPPImet = PUPPImetHandle->front();
-  //myNtuple->InitializeVariables();
+  const BXVector<l1t::Tau>* stage2Tau = stage2TauHandle.product();
+  const BXVector<l1t::EGamma>* stage2EGamma = stage2EGammaHandle.product();
+  const BXVector<l1t::Muon>* stage2Muon = stage2MuonHandle.product();
+  const BXVector<l1t::Jet>* stage2Jet = stage2JetHandle.product(); 
+
+ //myNtuple->InitializeVariables();
     
   _indexevents = event.id().event();
   _runNumber = event.id().run();
@@ -1589,7 +1763,15 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
   _numberOfJets = 0;
   if(writeJets)_numberOfJets = FillJet(jets, event, &jecUnc);
   if(writeFatJets) FillFatJet(fatjets, event);
-     
+
+  //Stage-2                                                                                                                                                                                                         
+  if(writeStage2){
+    stage2objNumber=FillStage2(stage2Tau, stage2EGamma, stage2Muon, stage2Jet, event);
+    _stage2_tauN = stage2objNumber[0];
+    _stage2_egN = stage2objNumber[1];
+    _stage2_jetN = stage2objNumber[2];
+    _stage2_muonN = stage2objNumber[3];
+  }
 
   //Loop on pairs
   std::vector<pat::CompositeCandidate> candVector;
@@ -1763,7 +1945,25 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
     _mothers_py.push_back( (float) candp4.Y());
     _mothers_pz.push_back( (float) candp4.Z());
     _mothers_e.push_back( (float) candp4.T());
-    
+
+    // use info computed in FillSoftLeptons to check if legs are matched to separate trigger objects for each trigger
+    Long64_t trgSeparateMatch = 0;
+    vector<int> vMatchesDau1 = vTrgMatchedToDau_idx.at(_indexDau1.back());
+    vector<int> vMatchesDau2 = vTrgMatchedToDau_idx.at(_indexDau2.back());
+
+    for (uint trgidx = 0; trgidx < vMatchesDau1.size(); ++trgidx)
+    {
+      int match1 = vMatchesDau1.at(trgidx) ;
+      int match2 = vMatchesDau2.at(trgidx) ;
+
+      if (match1 != match2 || match1 == -1) // if all good (different match) store 1 in the corresp hlt bit
+        trgSeparateMatch |= ((Long64_t) 1 << trgidx);
+    }
+    _mothers_trgSeparateMatch.push_back(trgSeparateMatch);
+    // cout << "Mother: " << _mothers_trgSeparateMatch.size() -1 << " " << trgSeparateMatch << endl;
+
+
+
     /*   float fillArray[nOutVars]={
     (float)event.id().run(),
     (float)event.id().event(),
@@ -1786,6 +1986,91 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
   myTree->Fill();
   //return;
 }
+
+
+//Fill stage-2 objects for T&P studies                                                                                                                                                                             \
+                                                                                                                                                                                                                    
+int* HTauTauNtuplizer::FillStage2(const BXVector<l1t::Tau>* taus, const BXVector<l1t::EGamma>* egs, const BXVector<l1t::Muon>* muons, const BXVector<l1t::Jet>* jets, const edm::Event& event){
+  static Int_t nObj[4];
+  for(int ii =0; ii<4; ii++){
+    nObj[ii]=0;
+  }
+  for (int ibx = taus->getFirstBX(); ibx <= taus->getLastBX(); ++ibx)
+    {
+      for (BXVector<l1t::Tau>::const_iterator it=taus->begin(ibx); it!=taus->end(ibx); it++)
+	{
+          if (it->pt() > 0){
+            nObj[0]++;
+            _stage2_tauEt .push_back(it->et());
+            _stage2_tauEta.push_back(it->eta());
+            _stage2_tauPhi.push_back(it->phi());
+            _stage2_tauIEt .push_back(it->hwPt());
+            _stage2_tauIEta.push_back(it->hwEta());
+            _stage2_tauIPhi.push_back(it->hwPhi());
+            _stage2_tauIso.push_back(it->hwIso());
+            _stage2_tauBx .push_back(ibx);
+          }
+	}
+    }
+  for (int ibx = egs->getFirstBX(); ibx <= egs->getLastBX(); ++ibx)
+    {
+      for (BXVector<l1t::EGamma>::const_iterator it=egs->begin(ibx); it!=egs->end(ibx); it++)
+        {
+          if (it->pt() > 0){
+            nObj[1]++;
+            _stage2_egEt .push_back(it->et());
+            _stage2_egEta.push_back(it->eta());
+            _stage2_egPhi.push_back(it->phi());
+            _stage2_egIEt .push_back(it->hwPt());
+            _stage2_egIEta.push_back(it->hwEta());
+            _stage2_egIPhi.push_back(it->hwPhi());
+            _stage2_egIso.push_back(it->hwIso());
+            _stage2_egBx .push_back(ibx);
+          }
+        }
+    }
+  for (int ibx = jets->getFirstBX(); ibx <= jets->getLastBX(); ++ibx)
+    {
+      for (BXVector<l1t::Jet>::const_iterator it=jets->begin(ibx); it!=jets->end(ibx); it++)
+        {
+          if (it->pt() > 0){
+            nObj[2]++;
+            _stage2_jetEt .push_back(it->et());
+            _stage2_jetEta.push_back(it->eta());
+            _stage2_jetPhi.push_back(it->phi());
+            _stage2_jetIEt .push_back(it->hwPt());
+            _stage2_jetIEta.push_back(it->hwEta());
+            _stage2_jetIPhi.push_back(it->hwPhi());
+            _stage2_jetBx .push_back(ibx);
+          }
+        }
+    }
+  for (int ibx = muons->getFirstBX(); ibx <= muons->getLastBX(); ++ibx)
+    {
+      for (BXVector<l1t::Muon>::const_iterator it=muons->begin(ibx); it!=muons->end(ibx); it++)
+        {
+          if (it->pt() > 0){
+            nObj[3]++;
+            _stage2_muonEt .push_back(it->et());
+            _stage2_muonEta.push_back(it->eta());
+            _stage2_muonPhi.push_back(it->phi());
+            _stage2_muonIEt .push_back(it->hwPt());
+            _stage2_muonIEta.push_back(it->hwEta());
+            _stage2_muonIPhi.push_back(it->hwPhi());
+            _stage2_muonChg.push_back(it->charge());
+            _stage2_muonIso.push_back(it->hwIso());
+            _stage2_muonQual.push_back(it->hwQual());
+            _stage2_muonTfMuonIdx.push_back(it->tfMuonIndex());
+            _stage2_muonBx .push_back(ibx);
+          }
+        }
+    }
+  return nObj;
+}
+
+
+
+
 
 //Fill jets quantities
 int HTauTauNtuplizer::FillJet(const edm::View<pat::Jet> *jets, const edm::Event& event, JetCorrectionUncertainty* jecUnc){
@@ -2035,6 +2320,7 @@ void HTauTauNtuplizer::FillSoftLeptons(const edm::View<reco::Candidate> *daus,
   event.getByToken(triggerObjects_, triggerObjects);
   event.getByToken(triggerBits_, triggerBits);
   const edm::TriggerNames &names = event.triggerNames(*triggerBits);
+  
   
   edm::Handle<vector<l1extra::L1JetParticle>> L1ExtraIsoTau;
   event.getByToken(l1ExtraIsoTau_, L1ExtraIsoTau);
@@ -2416,7 +2702,16 @@ void HTauTauNtuplizer::FillSoftLeptons(const edm::View<reco::Candidate> *daus,
     Long64_t trgMatched = 0;
     Long64_t triggertypeIsGood = 0;
     float hltpt=0;
-    for (pat::TriggerObjectStandAlone obj : *triggerObjects) { 
+    
+    // list of indexes of all TO standalone that are matched to this specific daughter and pass HLT filter(s)
+    // use as: toStandaloneMatched.at(idxHLT).at(idx tostadalone)
+    vector<vector<int>> toStandaloneMatched (myTriggerHelper->GetNTriggers(), vector<int>(0));
+
+    // for (pat::TriggerObjectStandAlone obj : *triggerObjects) { 
+    for (size_t idxto = 0; idxto < triggerObjects->size(); ++idxto)
+    {
+      pat::TriggerObjectStandAlone obj = triggerObjects->at(idxto);
+      
       //check if the trigger object matches cand
       bool triggerType=false;
 
@@ -2515,8 +2810,11 @@ void HTauTauNtuplizer::FillSoftLeptons(const edm::View<reco::Candidate> *daus,
           }
           else istrgMatched = false;
           // FIXME: should I check type? --> no, multiple filters should be enough
-          if(istrgMatched) trgMatched |= (long(1) <<triggerbit);
-
+          if(istrgMatched)
+          {
+            trgMatched |= (long(1) <<triggerbit);
+            toStandaloneMatched.at(triggerbit).push_back(idxto);
+          }
           // cout << "istrgMatched ? " << istrgMatched << endl;
 
         } // loop on triggerbit from 0 to GetNTriggers()
@@ -2529,6 +2827,21 @@ void HTauTauNtuplizer::FillSoftLeptons(const edm::View<reco::Candidate> *daus,
     _daughters_L3FilterFiredLast.push_back(L3triggerbit);    
     _daughters_trgMatched.push_back(trgMatched);    
     _daughters_HLTpt.push_back(hltpt);
+
+    vector<int> vTrgMatchedIdx;
+    for (int idxHLT = 0; idxHLT < myTriggerHelper->GetNTriggers(); ++idxHLT)
+    {
+      // if I have more than 1 match, I will be sure that different hlt objects are matched in a pair,
+      // so I don't care and I put a value of -1
+      // if I have no match, I don't care so I put -1 as well
+      if (toStandaloneMatched.at(idxHLT).size() != 1) 
+        vTrgMatchedIdx.push_back(-1);
+      // if I have exactly 1 match, I store the Trigger Object index.
+      // I will compare it later for the two legs of the pair and see if I matched separate objects
+      else
+        vTrgMatchedIdx.push_back(toStandaloneMatched.at(idxHLT).at(0));
+    }
+    vTrgMatchedToDau_idx.push_back(vTrgMatchedIdx);
 
 
     // L1 candidate matching -- to correct for the missing seed
@@ -2547,10 +2860,66 @@ void HTauTauNtuplizer::FillSoftLeptons(const edm::View<reco::Candidate> *daus,
       }
     }
     _daughters_isL1IsoTau28Matched.push_back(isL1IsoTauMatched) ;
+    
+    /*
+    // L1 candidate matching -- to correct for the missing seed
+    bool isL1IsoTau28Matched = false;
+    bool isL1IsoTau30Matched = false;
+    bool isL1IsoTau32Matched = false;
+    bool isL1IsoTau33Matched = false;
+    bool isL1IsoTau34Matched = false;
+    bool isL1IsoTau35Matched = false;
+    bool isL1IsoTau36Matched = false;
+    bool isL1Tau50Matched = false;
+    bool isL1Tau70Matched = false;
+    if(L1ExtraTau.isValid()){
+      for (unsigned int iL1Tau = 0; iL1Tau < L1ExtraTau->size(); iL1Tau++)
+      {
+        const l1extra::L1JetParticle& L1Tau = (*L1ExtraTau).at(iL1Tau);
+        //cout << "IL1TauL: " << iL1IsoTau << " - " << L1IsoTau.pt() << " " << L1IsoTau.eta() << " " << L1IsoTau.phi() << " " << isL1IsoTauMatched << endl;
+        // 0.5 cone match + pT requirement as in data taking
+	if(deltaR2(L1Tau,*cand)<0.25 && L1Tau.eta()<2.1){
+	  if(L1Tau.pt() > 28)
+	    {
+	      isL1Iso28Matched = true;
+	      if(L1Tau.pt() > 30){
+		isL1Iso30Matched = true;
+		if(L1Tau.pt() > 32){
+		  isL1Iso32Matched = true;
+		  if(L1Tau.pt() > 33){
+		    isL1Iso33Matched = true;
+		    if(L1Tau.pt() > 34){
+		      isL1Iso34Matched = true;	
+		      if(L1Tau.pt() > 35){
+			isL1Iso35Matched = true;
+			if(L1Tau.pt() > 36){
+			  isL1Iso36Matched = true;     
+			  break;
+			}
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+	}
+      }
+    }
+    _daughters_isL1IsoTau28Matched.push_back(isL1IsoTau28Matched) ;
+    _daughters_isL1IsoTau30Matched.push_back(isL1IsoTau30Matched) ;
+    _daughters_isL1IsoTau32Matched.push_back(isL1IsoTau32Matched) ;
+    _daughters_isL1IsoTau33Matched.push_back(isL1IsoTau33Matched) ;
+    _daughters_isL1IsoTau34Matched.push_back(isL1IsoTau34Matched) ;
+    _daughters_isL1IsoTau35Matched.push_back(isL1IsoTau35Matched) ;
+    _daughters_isL1IsoTau36Matched.push_back(isL1IsoTau36Matched) ;
+    
+    
+    
+
+    */
 
   }
 }
-
 /*
 void HTauTauNtuplizer::FillbQuarks(const edm::Event& event){
   edm::Handle<edm::View<pat::GenericParticle>>candHandle;
@@ -2716,6 +3085,14 @@ void HTauTauNtuplizer::FillGenJetInfo(const edm::Event& event)
 
       _genjet_partonFlavour.push_back(partFlav);
       _genjet_hadronFlavour.push_back(hadrFlav);
+
+      // cout << igj << " " << genJet.pdgId() << endl;
+      // only mesons and barions in the list, but no B to infer the jet flavour    
+      // for (uint ic = 0; ic < genJet.numberOfDaughters(); ++ic)
+      // {
+      //   const reco::Candidate* cand = genJet.daughter(ic);
+      //   cout << ic << " " << cand->pdgId() << " " << cand->pt() << " " << endl;
+      // }
     }
 
     return;
@@ -2971,15 +3348,20 @@ bool HTauTauNtuplizer::ComparePairsbyPt(pat::CompositeCandidate i, pat::Composit
 
 float HTauTauNtuplizer::ComputeMT (math::XYZTLorentzVector visP4, float METx, float METy)
 {
-    float MET = TMath::Sqrt (METx*METx + METy*METy);
-    math::XYZTLorentzVector METP4 (METx, METy, 0, MET);
+    math::XYZTLorentzVector METP4 (METx, METy, 0, 0); // I only care about transverse plane
+    double dphi = deltaPhi(visP4.phi(), METP4.phi());
+    return sqrt(2.*visP4.Pt()*METP4.Pt()*(1.-cos(dphi)));
+
+    // this code is equivalent, but can give NaN and rounding errors when met and lepton are very collinear
+    // float MET = TMath::Sqrt (METx*METx + METy*METy);
+    // math::XYZTLorentzVector METP4 (METx, METy, 0, MET);
     
-    float scalSum = MET + visP4.pt();
-    math::XYZTLorentzVector vecSum (visP4);
-    vecSum += METP4;
-    float vecSumPt = vecSum.pt();
+    // float scalSum = MET + visP4.pt();
+    // math::XYZTLorentzVector vecSum (visP4);
+    // vecSum += METP4;
+    // float vecSumPt = vecSum.pt();
     
-    return TMath::Sqrt (scalSum*scalSum - vecSumPt*vecSumPt);
+    // return TMath::Sqrt (scalSum*scalSum - vecSumPt*vecSumPt);
 }
 
 /////////////////////////////////////////////////////////////////
