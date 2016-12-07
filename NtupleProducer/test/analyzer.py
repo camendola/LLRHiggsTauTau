@@ -28,11 +28,11 @@ BUILDONLYOS=False #If true don't create the collection of SS candidates (and thu
 APPLYTESCORRECTION=True # shift the central value of the tau energy scale before computing up/down variations
 COMPUTEUPDOWNSVFIT = True # compute SVfit for up/down TES variation
 doCPVariables=False # compute CP variables and PV refit
-IsMC=False
+IsMC=True
 Is25ns=True
-HLTProcessName='HLT' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.
+HLTProcessName='HLT2' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.
 if not IsMC:
-    HLTProcessName='HLT' #It always 'HLT' for real data
+    HLTProcessName='HLT2' #It always 'HLT' for real data
 print "HLTProcessName: ",HLTProcessName
 
 #relaxed sets for testing purposes
@@ -66,7 +66,11 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-    '/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/150/00000/34A57FB8-D819-E611-B0A4-02163E0144EE.root', #80X data
+  # 'file:/grid_mnt/data__data.polcms/cms/amendola/miniAOD/2EFA0066-943A-E611-B102-5065F38172A1.root',
+   # 'file:/grid_mnt/data__data.polcms/cms/amendola/miniAOD/D616CA64-943A-E611-99C8-24BE05C6E711.root',
+    'file:/grid_mnt/data__data.polcms/cms/amendola/miniAOD/D8601366-943A-E611-A2DD-A0000420FE80.root',
+
+#'/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/150/00000/34A57FB8-D819-E611-B0A4-02163E0144EE.root', #80X data
     #'/store/mc/RunIISpring16MiniAODv1/GluGluToBulkGravitonToHHTo2B2Tau_M-400_narrow_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3_ext1-v1/30000/06E22BEA-9F10-E611-9862-1CB72C0A3A5D.root', #80X MC
     # '/store/mc/RunIIFall15MiniAODv2/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/50000/12184969-3DB8-E511-879B-001E67504A65.root', #76X MC
     )
@@ -85,7 +89,7 @@ process.maxEvents.input = 1000
 ## Output file
 ##
 
-process.TFileService=cms.Service('TFileService',fileName=cms.string('HTauTauAnalysis.root'))
+process.TFileService=cms.Service('TFileService',fileName=cms.string('HTauTauAnalysis_2.root'))
 
 if DO_ENRICHED:
     process.out = cms.OutputModule("PoolOutputModule",

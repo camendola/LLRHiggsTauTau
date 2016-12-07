@@ -35,11 +35,11 @@ if __name__ == "__main__":
     usage = 'usage: %prog [options]'
     parser = optparse.OptionParser(usage)
     parser.add_option('-q', '--queue'         ,    dest='queue'              , help='batch queue'                                        , default='short')
-    parser.add_option('-s', '--sample'        ,    dest='samplefile'         , help='python file names'                                  , default='TTJets_files.py')
+    parser.add_option('-s', '--sample'        ,    dest='samplefile'         , help='python file names'                                  , default='MC_250.py')
     parser.add_option('-n', '--njobs'         ,    dest='njobs'              , help='number of jobs'                                     , default=1,  type=int)
     parser.add_option('-w', '--wholefile'     ,    dest='wholefile'          , help='use whole files [false]'                            , default=False)
     parser.add_option('-m', '--maxev'         ,    dest='maxevents'          , help='max total number of events (-1 for all)'            , default=-1, type=int)
-    parser.add_option('-o', '--out'           ,    dest='output'             , help='output directory'                                   , default='/data_CMS/cms/cadamuro/test_submit_to_tier3/')
+    parser.add_option('-o', '--out'           ,    dest='output'             , help='output directory'                                   , default='/data_CMS/cms/amendola/test_submit_to_tier3/')
     parser.add_option('-c', '--cfg'           ,    dest='cfg'                , help='cfg file'                                           , default='analyzer_forTier3.py')
     parser.add_option('-r', '--rep'           ,    dest='customReplacements' , help='sed replacements for cfg  key1:val1,key2:val2,...'  , default=None)
     parser.add_option('-t', '--tag'           ,    dest='nameTag'            , help='tag defining the sample and production'             , default='')

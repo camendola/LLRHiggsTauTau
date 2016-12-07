@@ -51,7 +51,9 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 if IsMC:
     process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2_v1'
 else :
-    process.GlobalTag.globaltag = '80X_dataRun2_Prompt_ICHEP16JEC_v0'
+    # process.GlobalTag.globaltag = '80X_dataRun2_Prompt_ICHEP16JEC_v0' # ICHEP
+    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v4' # Run B-G sept rereco 2016
+    # process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v14' # Run H prompt-reco 2016
 print process.GlobalTag.globaltag
 
 nanosec="25"
@@ -494,6 +496,7 @@ process.taus=cms.Sequence(process.bareTaus + process.softTaus)
 ### ----------------------------------------------------------------------
 process.genInfo = cms.EDProducer("GenFiller",
          src = cms.InputTag("prunedGenParticles"),
+         storeLightFlavAndGlu = cms.bool(True) # if True, store also udcs and gluons (first copy)
  )                
 if IsMC : process.geninfo = cms.Sequence(process.genInfo)
 else : process.geninfo = cms.Sequence()
@@ -632,10 +635,22 @@ if USEPAIRMET:
 else:
     print "Using event pfMET (same MET for all pairs)"
 
-## always compute met significance
-process.load("RecoMET.METProducers.METSignificance_cfi")
-process.load("RecoMET.METProducers.METSignificanceParams_cfi")
-process.METSequence += cms.Sequence(process.METSignificance)
+    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+    runMetCorAndUncFromMiniAOD(
+      process,
+      isData= (not IsMC),
+    )
+    # patch to get a standalone MET significance collection
+    process.METSignificance = cms.EDProducer ("ExtractMETSignificance",
+                                                  srcMET=cms.InputTag("slimmedMETs","","TEST")
+                                                  )
+    process.METSequence += process.fullPatMetSequence
+    process.METSequence += process.METSignificance
+
+# ## always compute met significance
+# process.load("RecoMET.METProducers.METSignificance_cfi")
+# process.load("RecoMET.METProducers.METSignificanceParams_cfi")
+# process.METSequence += cms.Sequence(process.METSignificance)
 
 ## ----------------------------------------------------------------------
 ## Z-recoil correction
@@ -667,7 +682,7 @@ srcMETTag = None
 if USEPAIRMET:
   srcMETTag = cms.InputTag("corrMVAMET") if (IsMC and APPLYMETCORR) else cms.InputTag("MVAMET", "MVAMET")
 else:
-  srcMETTag = cms.InputTag(PFMetName)
+  srcMETTag = cms.InputTag(PFMetName, "", "TEST")
 
 ## ----------------------------------------------------------------------
 ## SV fit
@@ -736,7 +751,7 @@ process.HTauTauTree = cms.EDAnalyzer("HTauTauNtuplizer",
 if USE_NOHFMET:
     process.HTauTauTree.metCollection = cms.InputTag("slimmedMETsNoHF")
 else: 
-    process.HTauTauTree.metCollection = cms.InputTag("slimmedMETs")
+    process.HTauTauTree.metCollection = cms.InputTag("slimmedMETs", "", "TEST") # use TEST so that I get the corrected one
 
 if SVFITBYPASS:
     process.HTauTauTree.candCollection = cms.InputTag("SVbypass")
