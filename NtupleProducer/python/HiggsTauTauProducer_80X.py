@@ -11,9 +11,6 @@ ELECORRTYPE=APPLYELECORR
 try: IsMC
 except NameError:
     IsMC=True
-try: doCPVariables
-except NameError:
-    doCPVariables=True       
 try: LEPTON_SETUP
 except NameError:
     LEPTON_SETUP=2012
@@ -36,11 +33,7 @@ if USE_NOHFMET: PFMetName = "slimmedMETsNoHF"
 
 try: APPLYMETCORR
 except NameError:
-    APPLYMETCORR=True
-
-try: HLTProcessName
-except NameError:
-    HLTProcessName='HLT'
+    APPLYMETCORR=TRUE
 
 ### ----------------------------------------------------------------------
 ### Set the GT
@@ -49,11 +42,9 @@ from Configuration.AlCa.autoCond import autoCond
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")    
 #process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 if IsMC:
-    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2_v1'
+    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2'
 else :
-    # process.GlobalTag.globaltag = '80X_dataRun2_Prompt_ICHEP16JEC_v0' # ICHEP
-    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v4' # Run B-G sept rereco 2016
-    # process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v14' # Run H prompt-reco 2016
+    process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v8'
 print process.GlobalTag.globaltag
 
 nanosec="25"
@@ -89,7 +80,7 @@ process.nEventsPassTrigger = cms.EDProducer("EventCountProducer") # these names 
 import HLTrigger.HLTfilters.hltHighLevel_cfi as hlt
 
 process.hltFilter = hlt.hltHighLevel.clone(
-    TriggerResultsTag = cms.InputTag("TriggerResults","",HLTProcessName),
+    TriggerResultsTag = cms.InputTag("TriggerResults","","HLT"),
     HLTPaths = TRIGGERLIST,
     andOr = cms.bool(True), # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
     throw = cms.bool(False) #if True: throws exception if a trigger path is invalid  
@@ -137,7 +128,7 @@ process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
 
 
 process.bareSoftMuons = cms.EDFilter("PATMuonRefSelector",
-    src = cms.InputTag("slimmedMuons"),
+    src = cms.InputTag("cleanedMu"),
     cut = cms.string(MUCUT)
 #    Lowering pT cuts
 #    cut = cms.string("(isGlobalMuon || (isTrackerMuon && numberOfMatches>0)) &&" +
@@ -174,8 +165,8 @@ process.softMuons = cms.EDProducer("MuFiller",
     )
 )
 
-# process.muons =  cms.Sequence(process.cleanedMu + process.bareSoftMuons+ process.softMuons)
-process.muons =  cms.Sequence(process.bareSoftMuons+ process.softMuons)    
+process.muons =  cms.Sequence(process.cleanedMu + process.bareSoftMuons+ process.softMuons)
+    
 
 ###
 ### Electrons
@@ -411,6 +402,12 @@ process.cleanTaus = cms.EDProducer("PATTauCleaner",
         finalCut = cms.string(' '),
 )
 
+#Stage-2 Layer-2 tau objects
+#process.stage2Taus = cms.EDProducer("Stage2Filler",
+#   src = cms.InputTag("caloStage2Digis","Tau"),
+   #src = cms.InputTag("stage2TausCollection")
+#)
+
 # NominalTESCorrection=-1#in percent\
 APPLYTESCORRECTION = APPLYTESCORRECTION if IsMC else False # always false if data
 process.softTaus = cms.EDProducer("TauFiller",
@@ -468,6 +465,7 @@ process.softTaus = cms.EDProducer("TauFiller",
 #     )
 
 
+#process.taus=cms.Sequence(process.bareTaus + process.softTaus + process.stage2Taus)
 process.taus=cms.Sequence(process.bareTaus + process.softTaus)
 
 # process.tausMerged = cms.EDProducer("MergeTauCollections",
@@ -496,7 +494,6 @@ process.taus=cms.Sequence(process.bareTaus + process.softTaus)
 ### ----------------------------------------------------------------------
 process.genInfo = cms.EDProducer("GenFiller",
          src = cms.InputTag("prunedGenParticles"),
-         storeLightFlavAndGlu = cms.bool(True) # if True, store also udcs and gluons (first copy)
  )                
 if IsMC : process.geninfo = cms.Sequence(process.genInfo)
 else : process.geninfo = cms.Sequence()
@@ -542,28 +539,28 @@ process.softLeptons = cms.EDProducer("CandViewMerger",
 # )
 #print process.pileupJetIdUpdated.dumpConfig()
 
-# apply new jet energy corrections
-from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-
-jecLevels = None
-if IsMC:
-    jecLevels = [ 'L1FastJet', 'L2Relative', 'L3Absolute' ]
-else:
-    jecLevels = [ 'L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual' ]
-
-updateJetCollection(
-   process,
-   jetSource = cms.InputTag('slimmedJets'),
-   labelName = 'UpdatedJEC',
-   jetCorrections = ('AK4PFchs', cms.vstring(jecLevels), 'None')
-)
-
-process.jecSequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC)
+# # apply new jet energy corrections
+# from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
+# jecLevels = None
+# if IsMC:
+#     jecLevels = [ 'L1FastJet', 'L2Relative', 'L3Absolute' ]
+# else:
+#     jecLevels = [ 'L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual' ]
+# process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
+#     src = cms.InputTag("slimmedJets"),
+#     levels = jecLevels,
+#     payload = 'AK4PFchs' # Make sure to choose the appropriate levels and payload here!
+# )
+# from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+# process.patJetsReapplyJEC = patJetsUpdated.clone(
+#     jetSource = cms.InputTag("slimmedJets"),
+#     jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+# )
+# process.patJetsReapplyJEC.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
 
 process.jets = cms.EDFilter("PATJetRefSelector",
-                            #src = cms.InputTag("slimmedJets"),
-                            src = cms.InputTag("updatedPatJetsUpdatedJEC"),
-                            cut = cms.string(JETCUT)
+    src = cms.InputTag("slimmedJets"),
+    cut = cms.string(JETCUT)
 )
 ##
 ## Build ll candidates (here OS)
@@ -635,22 +632,10 @@ if USEPAIRMET:
 else:
     print "Using event pfMET (same MET for all pairs)"
 
-    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-    runMetCorAndUncFromMiniAOD(
-      process,
-      isData= (not IsMC),
-    )
-    # patch to get a standalone MET significance collection
-    process.METSignificance = cms.EDProducer ("ExtractMETSignificance",
-                                                  srcMET=cms.InputTag("slimmedMETs","","TEST")
-                                                  )
-    process.METSequence += process.fullPatMetSequence
-    process.METSequence += process.METSignificance
-
-# ## always compute met significance
-# process.load("RecoMET.METProducers.METSignificance_cfi")
-# process.load("RecoMET.METProducers.METSignificanceParams_cfi")
-# process.METSequence += cms.Sequence(process.METSignificance)
+## always compute met significance
+process.load("RecoMET.METProducers.METSignificance_cfi")
+process.load("RecoMET.METProducers.METSignificanceParams_cfi")
+process.METSequence += cms.Sequence(process.METSignificance)
 
 ## ----------------------------------------------------------------------
 ## Z-recoil correction
@@ -669,7 +654,7 @@ if IsMC and APPLYMETCORR:
             srcMEt = cms.InputTag("MVAMET", "MVAMET"),
             srcGenParticles = cms.InputTag("prunedGenParticles"),
             srcJets = cms.InputTag("selJetsForZrecoilCorrection"),
-            correction = cms.string("HTT-utilities/RecoilCorrections/data/MvaMET_MG_2016BCD.root")
+            correction = cms.string("HTT-utilities/RecoilCorrections/data/recoilMvaMEt_76X_newTraining_MG5.root")
         )
         process.METSequence += process.selJetsForZrecoilCorrection        
         process.METSequence += process.corrMVAMET
@@ -682,7 +667,7 @@ srcMETTag = None
 if USEPAIRMET:
   srcMETTag = cms.InputTag("corrMVAMET") if (IsMC and APPLYMETCORR) else cms.InputTag("MVAMET", "MVAMET")
 else:
-  srcMETTag = cms.InputTag(PFMetName, "", "TEST")
+  srcMETTag = cms.InputTag(PFMetName)
 
 ## ----------------------------------------------------------------------
 ## SV fit
@@ -715,7 +700,6 @@ process.HTauTauTree = cms.EDAnalyzer("HTauTauNtuplizer",
                       fileName = cms.untracked.string ("CosaACaso"),
                       applyFSR = cms.bool(APPLYFSR),
                       IsMC = cms.bool(IsMC),
-                      doCPVariables = cms.bool(doCPVariables),               
                       vtxCollection = cms.InputTag("offlineSlimmedPrimaryVertices"),
                       puCollection = cms.InputTag("slimmedAddPileupInfo"),
                       rhoCollection = cms.InputTag("fixedGridRhoFastjetAll"),
@@ -726,8 +710,7 @@ process.HTauTauTree = cms.EDAnalyzer("HTauTauNtuplizer",
                       stage2EGammaCollection = cms.InputTag("caloStage2Digis","EGamma"),
                       stage2MuonCollection = cms.InputTag("gmtStage2Digis","Muon"),
                       stage2JetCollection = cms.InputTag("caloStage2Digis","Jet"),
-                      #JECset = cms.untracked.string("patJetCorrFactors"),
-                      JECset = cms.untracked.string("patJetCorrFactorsUpdatedJEC"),
+                      JECset = cms.untracked.string("patJetCorrFactors"),
                       ak8jetCollection = cms.InputTag("slimmedJetsAK8"),
                       lepCollection = cms.InputTag("softLeptons"),
                       lheCollection = cms.InputTag("LHEEventProduct"),
@@ -737,7 +720,7 @@ process.HTauTauTree = cms.EDAnalyzer("HTauTauNtuplizer",
                       totCollection = cms.InputTag("nEventsTotal"),
                       passCollection = cms.InputTag("nEventsPassTrigger"),
                       lhepCollection = cms.InputTag("externalLHEProducer"),
-                      triggerResultsLabel = cms.InputTag("TriggerResults", "", HLTProcessName), #Different names for MiniAODv2 at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.                      
+                      triggerResultsLabel = cms.InputTag("TriggerResults", "", "HLT"),
                       triggerSet = cms.InputTag("selectedPatTrigger"),
                       triggerList = HLTLIST,
                       metFilters = cms.InputTag ("TriggerResults","",METfiltersProcess),
@@ -745,13 +728,12 @@ process.HTauTauTree = cms.EDAnalyzer("HTauTauNtuplizer",
                       srcPFMETCov = cms.InputTag("METSignificance", "METCovariance"),
                       srcPFMETSignificance = cms.InputTag("METSignificance", "METSignificance"),
                       l1extraIsoTau = cms.InputTag("l1extraParticles", "IsoTau"),
-                      HT = cms.InputTag("externalLHEProducer"),
-                      beamSpot = cms.InputTag("offlineBeamSpot")               
+                      HT = cms.InputTag("externalLHEProducer")
                       )
 if USE_NOHFMET:
     process.HTauTauTree.metCollection = cms.InputTag("slimmedMETsNoHF")
 else: 
-    process.HTauTauTree.metCollection = cms.InputTag("slimmedMETs", "", "TEST") # use TEST so that I get the corrected one
+    process.HTauTauTree.metCollection = cms.InputTag("slimmedMETs")
 
 if SVFITBYPASS:
     process.HTauTauTree.candCollection = cms.InputTag("SVbypass")
@@ -786,8 +768,8 @@ process.Candidates = cms.Sequence(
     process.taus              + 
     process.fsrSequence       +
     process.softLeptons       + process.barellCand +
-    #process.jets              +
-    process.jecSequence + process.jets + 
+    # process.pileupJetIdUpdated + process.patJetCorrFactorsReapplyJEC + process.patJetsReapplyJEC + process.jets +
+    process.jets              +
     process.METSequence       +
     process.geninfo           +
     process.SVFit             
