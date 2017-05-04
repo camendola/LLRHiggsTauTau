@@ -23,11 +23,12 @@ USEPAIRMET=False # input to SVfit: true: MVA pair MET; false: PFmet (HF inclusio
 APPLYMETCORR=False # flag to enable (True) and disable (False) Z-recoil corrections for MVA MET response and resolution
 USE_NOHFMET = False # True to exclude HF and run on silver json
 
-SVFITBYPASS=True # use SVFitBypass module, no SVfit computation, adds dummy userfloats for MET and SVfit mass
+SVFITBYPASS=False # use SVFitBypass module, no SVfit computation, adds dummy userfloats for MET and SVfit mass
 BUILDONLYOS=False #If true don't create the collection of SS candidates (and thus don't run SV fit on them)
-APPLYTESCORRECTION=True # shift the central value of the tau energy scale before computing up/down variations
-COMPUTEUPDOWNSVFIT = True # compute SVfit for up/down TES variation
+APPLYTESCORRECTION=False # shift the central value of the tau energy scale before computing up/down variations
+COMPUTEUPDOWNSVFIT=True # compute SVfit for up/down TES variation
 doCPVariables=False # compute CP variables and PV refit
+COMPUTEQGVAR = False # compute QG Tagger for jets
 IsMC=True
 Is25ns=True
 HLTProcessName='HLT2' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.
@@ -121,13 +122,13 @@ if DO_ENRICHED:
         #process.out.fileName = 'EnrichementForMiniAOD.root' #FIXME: change name of output file?
     process.end = cms.EndPath(process.out)
 
-#process.options = cms.PSet(skipEvent =  cms.untracked.vstring('ProductNotFound')),
+#process.options = cms.PSet(skipEvent =  cms.untracked.vstring('ProductNotFound'))
 #process.p = cms.EndPath(process.HTauTauTree)
 process.p = cms.Path(process.Candidates)
 
 # Silence output
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.MessageLogger.categories.append('onlyError')
 #process.MessageLogger.cerr.onlyError=cms.untracked.PSet(threshold  = cms.untracked.string('ERROR'))
 #process.MessageLogger.cerr.threshold='ERROR'

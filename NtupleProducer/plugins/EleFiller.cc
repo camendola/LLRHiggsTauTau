@@ -82,6 +82,7 @@ class EleFiller : public edm::EDProducer {
   edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<float> > mvaValuesMapToken_;
   edm::EDGetTokenT<edm::ValueMap<int> > mvaCategoriesMapToken_;//*******
+  edm::EDGetTokenT<edm::ValueMap<float> > HZZmvaValuesMapToken_;
 
 
 
@@ -107,7 +108,8 @@ EleFiller::EleFiller(const edm::ParameterSet& iConfig) :
   eleMediumIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"))),
   eleTightIdMapToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"))),
   mvaValuesMapToken_(consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("mvaValuesMap"))),
-  mvaCategoriesMapToken_(consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("mvaCategoriesMap"))) //****************
+  mvaCategoriesMapToken_(consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("mvaCategoriesMap"))),
+  HZZmvaValuesMapToken_(consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("HZZmvaValuesMap")))//****************
 
  
   //bdt(0)
@@ -174,6 +176,8 @@ EleFiller::EleFiller(const edm::ParameterSet& iConfig) :
   edm::Handle<edm::ValueMap<int> > mvaCategories;
   iEvent.getByToken(mvaValuesMapToken_,mvaValues);
   iEvent.getByToken(mvaCategoriesMapToken_,mvaCategories);
+  edm::Handle<edm::ValueMap<float> > HZZmvaValues;
+  iEvent.getByToken(HZZmvaValuesMapToken_,HZZmvaValues);
 
 //**********************
 
@@ -247,12 +251,14 @@ EleFiller::EleFiller(const edm::ParameterSet& iConfig) :
     l.addUserInt("isGsfCtfScPixChargeConsistent",(isGsfCtfScPixChargeConsistent ? 1 : 0));
     l.addUserInt("isGsfScPixChargeConsistent",(isGsfScPixChargeConsistent ? 1 : 0));
     l.addUserFloat("sigmaIetaIeta",l.sigmaIetaIeta());
+    l.addUserFloat("full5x5_sigmaIetaIeta",l.full5x5_sigmaIetaIeta());
     l.addUserFloat("hOverE",l.hcalOverEcal());
     l.addUserFloat("deltaEtaSuperClusterTrackAtVtx",l.deltaEtaSuperClusterTrackAtVtx());
     l.addUserFloat("deltaPhiSuperClusterTrackAtVtx",l.deltaPhiSuperClusterTrackAtVtx());
     l.addUserFloat("IoEmIoP",(1.0/l.ecalEnergy())-(1.0/l.p()));
     l.addUserFloat("IoEmIoP_ttH",IoEmIoP_ttH);
     l.addUserFloat("SCeta", fSCeta);
+    l.addUserInt("isEB", int(l.isEB()));
     const Ptr<pat::Electron> elPtr(electrons, el - electrons->begin() );
     int eleCUT=0;
     if((*veto_id_decisions)[ elPtr ])eleCUT |= 1 << 0;
@@ -269,6 +275,8 @@ EleFiller::EleFiller(const edm::ParameterSet& iConfig) :
     l.addUserInt("isEleID90",isEleID90);
     l.addUserFloat("eleMVAvalue",eleMVAvalue);
     l.addUserFloat("BDT",eleMVAvalue); //I know, it's duplicated, but I don't want to change to change all the downstream code...
+    float HZZeleMVAvalue=(*HZZmvaValues)[ele];
+    l.addUserFloat("HZZeleMVAvalue",HZZeleMVAvalue);
     bool isBDT = false;
     float afSCeta = fabs(fSCeta);
     if(afSCeta < 2.4){
