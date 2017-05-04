@@ -66,10 +66,11 @@ else :
 ### ----------------------------------------------------------------------
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-  # 'file:/grid_mnt/data__data.polcms/cms/amendola/miniAOD/2EFA0066-943A-E611-B102-5065F38172A1.root',
+   'file:/grid_mnt/data__data.polcms/cms/amendola/miniAOD/2EFA0066-943A-E611-B102-5065F38172A1.root',
    # 'file:/grid_mnt/data__data.polcms/cms/amendola/miniAOD/D616CA64-943A-E611-99C8-24BE05C6E711.root',
-    'file:/grid_mnt/data__data.polcms/cms/amendola/miniAOD/D8601366-943A-E611-A2DD-A0000420FE80.root',
-
+  #  'file:/grid_mnt/data__data.polcms/cms/amendola/miniAOD/D8601366-943A-E611-A2DD-A0000420FE80.root',
+#'root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/GluGluToRadionToHHTo2B2Tau_M-750_narrow_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/5AD2EFB3-CB3F-E611-9FAF-0025904C51F2.root'
+#'root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/GluGluToRadionToHHTo2B2Tau_M-250_narrow_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/00000/EE7C1AC7-903A-E611-A880-D4AE526A0B47.root'
 #'/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/150/00000/34A57FB8-D819-E611-B0A4-02163E0144EE.root', #80X data
     #'/store/mc/RunIISpring16MiniAODv1/GluGluToBulkGravitonToHHTo2B2Tau_M-400_narrow_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3_ext1-v1/30000/06E22BEA-9F10-E611-9862-1CB72C0A3A5D.root', #80X MC
     # '/store/mc/RunIIFall15MiniAODv2/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/50000/12184969-3DB8-E511-879B-001E67504A65.root', #76X MC
@@ -77,7 +78,7 @@ process.source = cms.Source("PoolSource",
 )
 
 #Limited nEv for testing purposes. -1 to run all events
-process.maxEvents.input = 1000
+process.maxEvents.input = -1
 
 # JSON mask for data --> defined in the lumiMask file
 # from JSON file
@@ -89,7 +90,7 @@ process.maxEvents.input = 1000
 ## Output file
 ##
 
-process.TFileService=cms.Service('TFileService',fileName=cms.string('HTauTauAnalysis_2.root'))
+process.TFileService=cms.Service('TFileService',fileName=cms.string('HTauTauAnalysis_0_750.root'))
 
 if DO_ENRICHED:
     process.out = cms.OutputModule("PoolOutputModule",

@@ -574,6 +574,7 @@ void FillFatJet(const edm::View<pat::Jet>* fatjets, const edm::Event&);
   std::vector<short int> _stage2_egIso;
   std::vector<short int> _stage2_egBx;
 
+
   Int_t _stage2_jetN;
   std::vector<Float_t> _stage2_jetEt;
   std::vector<Float_t> _stage2_jetEta;
@@ -1533,6 +1534,7 @@ void HTauTauNtuplizer::beginJob(){
   myTree->Branch("isRefitPV", &_isRefitPV);
 }
 
+
 Int_t HTauTauNtuplizer::FindCandIndex(const reco::Candidate& cand,Int_t iCand=0){
   const reco::Candidate *daughter = cand.daughter(iCand);
   for(UInt_t iLeptons=0;iLeptons<_softLeptons.size();iLeptons++){
@@ -2001,6 +2003,9 @@ int* HTauTauNtuplizer::FillStage2(const BXVector<l1t::Tau>* taus, const BXVector
 	{
           if (it->pt() > 0){
             nObj[0]++;
+	    //cout<<it->isMerged()<<endl;
+	    //cout<<"  "<<it->isoEt()<<endl;
+
             _stage2_tauEt .push_back(it->et());
             _stage2_tauEta.push_back(it->eta());
             _stage2_tauPhi.push_back(it->phi());
@@ -2861,62 +2866,7 @@ void HTauTauNtuplizer::FillSoftLeptons(const edm::View<reco::Candidate> *daus,
     }
     _daughters_isL1IsoTau28Matched.push_back(isL1IsoTauMatched) ;
     
-    /*
-    // L1 candidate matching -- to correct for the missing seed
-    bool isL1IsoTau28Matched = false;
-    bool isL1IsoTau30Matched = false;
-    bool isL1IsoTau32Matched = false;
-    bool isL1IsoTau33Matched = false;
-    bool isL1IsoTau34Matched = false;
-    bool isL1IsoTau35Matched = false;
-    bool isL1IsoTau36Matched = false;
-    bool isL1Tau50Matched = false;
-    bool isL1Tau70Matched = false;
-    if(L1ExtraTau.isValid()){
-      for (unsigned int iL1Tau = 0; iL1Tau < L1ExtraTau->size(); iL1Tau++)
-      {
-        const l1extra::L1JetParticle& L1Tau = (*L1ExtraTau).at(iL1Tau);
-        //cout << "IL1TauL: " << iL1IsoTau << " - " << L1IsoTau.pt() << " " << L1IsoTau.eta() << " " << L1IsoTau.phi() << " " << isL1IsoTauMatched << endl;
-        // 0.5 cone match + pT requirement as in data taking
-	if(deltaR2(L1Tau,*cand)<0.25 && L1Tau.eta()<2.1){
-	  if(L1Tau.pt() > 28)
-	    {
-	      isL1Iso28Matched = true;
-	      if(L1Tau.pt() > 30){
-		isL1Iso30Matched = true;
-		if(L1Tau.pt() > 32){
-		  isL1Iso32Matched = true;
-		  if(L1Tau.pt() > 33){
-		    isL1Iso33Matched = true;
-		    if(L1Tau.pt() > 34){
-		      isL1Iso34Matched = true;	
-		      if(L1Tau.pt() > 35){
-			isL1Iso35Matched = true;
-			if(L1Tau.pt() > 36){
-			  isL1Iso36Matched = true;     
-			  break;
-			}
-		      }
-		    }
-		  }
-		}
-	      }
-	    }
-	}
-      }
-    }
-    _daughters_isL1IsoTau28Matched.push_back(isL1IsoTau28Matched) ;
-    _daughters_isL1IsoTau30Matched.push_back(isL1IsoTau30Matched) ;
-    _daughters_isL1IsoTau32Matched.push_back(isL1IsoTau32Matched) ;
-    _daughters_isL1IsoTau33Matched.push_back(isL1IsoTau33Matched) ;
-    _daughters_isL1IsoTau34Matched.push_back(isL1IsoTau34Matched) ;
-    _daughters_isL1IsoTau35Matched.push_back(isL1IsoTau35Matched) ;
-    _daughters_isL1IsoTau36Matched.push_back(isL1IsoTau36Matched) ;
     
-    
-    
-
-    */
 
   }
 }
