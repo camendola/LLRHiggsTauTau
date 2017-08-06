@@ -1509,6 +1509,8 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
   }
   
   _triggerbit = myTriggerHelper->FindTriggerBit(event,foundPaths,indexOfPath,triggerBits);
+  
+   
   _metfilterbit = myTriggerHelper->FindMETBit(event, metFilterBits_);
   Long64_t tbit = _triggerbit;
   for(int itr=0;itr<myTriggerHelper->GetNTriggers();itr++) {
@@ -1592,6 +1594,7 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
   //myNtuple->InitializeVariables();
     
   _indexevents = event.id().event();
+  cout<<"event number "<<_indexevents<<endl;
   _runNumber = event.id().run();
   _lumi=event.luminosityBlock();
   // _met = met.sumEt(); // scalar sum of the pf candidates
@@ -1615,6 +1618,28 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
   {
     FillGenInfo(event); // gen particles
     FillGenJetInfo(event); // gen jets
+    
+ for (unsigned int igen = 0; igen < _genpart_px.size(); igen++)
+    {
+
+      bool isLast      = _genpart_flags.at(igen) & (1 << 13) ; // 13 = isLastCopy
+      bool isPrompt      = _genpart_flags.at(igen) & (1 << 0); // 0 = isPrompt
+      int pdg = _genpart_pdg.at(igen);
+      bool bToMuon = false; 
+      if (fabs(pdg)==13){	  
+	bToMuon = (isLast && (_genpart_flags.at(igen) & (1 << 6)) && !isPrompt);
+      }
+      if(fabs(pdg)  == 13){
+	  cout<<"event "<<_indexevents<<endl;
+	  cout<<_genpart_px.at(igen)<<" "<<_genpart_py.at(igen)<<" "<<_genpart_pz.at(igen)<<endl;
+	  cout<<"isLast "<<isLast<<endl;
+	  cout<<"isPrompt "<<isPrompt<<endl;
+	  cout<<"isDirect "<<(_genpart_flags.at(igen) & (1 << 6))<<endl;
+	  cout<<"pdg "<<pdg<<endl;
+	  cout<<"btomu "<<bToMuon<<endl;
+      }
+    }
+
   }
   //Loop of softleptons and fill them
   FillSoftLeptons(daus,event,eSetup,theFSR,jets);
@@ -2771,6 +2796,8 @@ void HTauTauNtuplizer::FillGenInfo(const edm::Event& event)
 	  _pvGen_z = igen->vz();
 	}
     }
+
+    cout<<"size "<<_genpart_px.size()<<endl;
 }
 
 

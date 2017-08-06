@@ -1,0 +1,340 @@
+DEBUG 2017-06-28 14:41:58,764: 	 Executing command: 'checkusername'
+DEBUG 2017-06-28 14:41:58,764: 	 Found CRAB cache file /home/llr/cms/amendola/.crab3
+DEBUG 2017-06-28 14:41:58,786: 	 Checking credentials
+DEBUG 2017-06-28 14:41:58,786: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2017-06-28 14:41:58,786: 	 Getting proxy life time left
+DEBUG 2017-06-28 14:41:59,490: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 42826
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:41:59,994: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 42826
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:41:59,994: 	 Proxy valid for 11:53:46 hours
+DEBUG 2017-06-28 14:42:00,102: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:42:00,102: 	 Checking credentials
+DEBUG 2017-06-28 14:42:00,102: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2017-06-28 14:42:00,102: 	 Getting proxy life time left
+DEBUG 2017-06-28 14:42:00,707: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 42825
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:42:01,712: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 42824
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:42:01,713: 	 Proxy valid for 11:53:45 hours
+DEBUG 2017-06-28 14:42:01,713: 	 Command use: checkusername
+DEBUG 2017-06-28 14:42:01,713: 	 Options use: []
+DEBUG 2017-06-28 14:42:01,713: 	 Instance is None
+DEBUG 2017-06-28 14:42:01,713: 	 Server base url is None
+INFO 2017-06-28 14:42:01,713: 	 Retrieving DN from proxy...
+INFO 2017-06-28 14:42:03,533: 	 DN is: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola
+INFO 2017-06-28 14:42:03,534: 	 Retrieving username from SiteDB...
+ERROR 2017-06-28 14:42:06,861: 	 Error: Failed to retrieve username from SiteDB. Your DN does not seem to be registered in SiteDB.
+Details follow:
+  Executed command: curl -s --capath /etc/grid-security/certificates --cert /tmp/x509up_u1027 --key /tmp/x509up_u1027 'https://cmsweb.cern.ch/sitedb/data/prod/whoami'
+    Stdout:
+      {"result": [
+       {"dn": "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola", "login": null, "method": "X509Proxy", "roles": {}, "name": null}
+      ]}
+      
+    Parsed username: null
+Note: Make sure you have the correct certificate mapped in SiteDB (you can check what is the certificate you currently have mapped in SiteDB by searching for your name in https://cmsweb.cern.ch/sitedb/prod/people). For instructions on how to map a certificate in SiteDB, see https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiteDBForCRAB.
+DEBUG 2017-06-28 14:44:42,384: 	 Executing command: 'checkusername'
+DEBUG 2017-06-28 14:44:42,385: 	 Found CRAB cache file /home/llr/cms/amendola/.crab3
+DEBUG 2017-06-28 14:44:42,397: 	 Checking credentials
+DEBUG 2017-06-28 14:44:42,397: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2017-06-28 14:44:42,398: 	 Getting proxy life time left
+DEBUG 2017-06-28 14:44:43,101: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 42662
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:44:43,605: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 42662
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:44:43,605: 	 Proxy valid for 11:51:02 hours
+DEBUG 2017-06-28 14:44:43,714: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:44:43,714: 	 Checking credentials
+DEBUG 2017-06-28 14:44:43,714: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2017-06-28 14:44:43,714: 	 Getting proxy life time left
+DEBUG 2017-06-28 14:44:44,218: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 42661
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:44:45,222: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 42660
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:44:45,222: 	 Proxy valid for 11:51:01 hours
+DEBUG 2017-06-28 14:44:45,223: 	 Command use: checkusername
+DEBUG 2017-06-28 14:44:45,223: 	 Options use: []
+DEBUG 2017-06-28 14:44:45,223: 	 Instance is None
+DEBUG 2017-06-28 14:44:45,223: 	 Server base url is None
+INFO 2017-06-28 14:44:45,223: 	 Retrieving DN from proxy...
+INFO 2017-06-28 14:44:47,295: 	 DN is: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola
+INFO 2017-06-28 14:44:47,295: 	 Retrieving username from SiteDB...
+ERROR 2017-06-28 14:44:49,619: 	 Error: Failed to retrieve username from SiteDB. Your DN does not seem to be registered in SiteDB.
+Details follow:
+  Executed command: curl -s --capath /etc/grid-security/certificates --cert /tmp/x509up_u1027 --key /tmp/x509up_u1027 'https://cmsweb.cern.ch/sitedb/data/prod/whoami'
+    Stdout:
+      {"result": [
+       {"dn": "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola", "login": null, "method": "X509Proxy", "roles": {}, "name": null}
+      ]}
+      
+    Parsed username: null
+Note: Make sure you have the correct certificate mapped in SiteDB (you can check what is the certificate you currently have mapped in SiteDB by searching for your name in https://cmsweb.cern.ch/sitedb/prod/people). For instructions on how to map a certificate in SiteDB, see https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiteDBForCRAB.
+DEBUG 2017-06-28 14:46:35,190: 	 Executing command: 'checkusername'
+DEBUG 2017-06-28 14:46:35,191: 	 Found CRAB cache file /home/llr/cms/amendola/.crab3
+DEBUG 2017-06-28 14:46:35,202: 	 Checking credentials
+DEBUG 2017-06-28 14:46:35,202: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2017-06-28 14:46:35,202: 	 Getting proxy life time left
+DEBUG 2017-06-28 14:46:35,806: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 42550
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:46:36,310: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 42549
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:46:36,310: 	 Proxy valid for 11:49:10 hours
+DEBUG 2017-06-28 14:46:36,418: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:46:36,418: 	 Checking credentials
+DEBUG 2017-06-28 14:46:36,418: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2017-06-28 14:46:36,418: 	 Getting proxy life time left
+DEBUG 2017-06-28 14:46:37,223: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 42548
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:46:37,928: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 42548
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 14:46:37,928: 	 Proxy valid for 11:49:08 hours
+DEBUG 2017-06-28 14:46:37,929: 	 Command use: checkusername
+DEBUG 2017-06-28 14:46:37,929: 	 Options use: []
+DEBUG 2017-06-28 14:46:37,929: 	 Instance is None
+DEBUG 2017-06-28 14:46:37,929: 	 Server base url is None
+INFO 2017-06-28 14:46:37,929: 	 Retrieving DN from proxy...
+INFO 2017-06-28 14:46:39,230: 	 DN is: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola
+INFO 2017-06-28 14:46:39,230: 	 Retrieving username from SiteDB...
+ERROR 2017-06-28 14:46:42,512: 	 Error: Failed to retrieve username from SiteDB. Your DN does not seem to be registered in SiteDB.
+Details follow:
+  Executed command: curl -s --capath /etc/grid-security/certificates --cert /tmp/x509up_u1027 --key /tmp/x509up_u1027 'https://cmsweb.cern.ch/sitedb/data/prod/whoami'
+    Stdout:
+      {"result": [
+       {"dn": "/DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola", "login": null, "method": "X509Proxy", "roles": {}, "name": null}
+      ]}
+      
+    Parsed username: null
+Note: Make sure you have the correct certificate mapped in SiteDB (you can check what is the certificate you currently have mapped in SiteDB by searching for your name in https://cmsweb.cern.ch/sitedb/prod/people). For instructions on how to map a certificate in SiteDB, see https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiteDBForCRAB.
+DEBUG 2017-06-28 16:30:29,863: 	 Executing command: 'checkusername'
+DEBUG 2017-06-28 16:30:29,863: 	 Found CRAB cache file /home/llr/cms/amendola/.crab3
+DEBUG 2017-06-28 16:30:29,876: 	 Checking credentials
+DEBUG 2017-06-28 16:30:29,876: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2017-06-28 16:30:29,876: 	 Getting proxy life time left
+DEBUG 2017-06-28 16:30:30,680: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 36315
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 16:30:31,183: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 36314
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 16:30:31,184: 	 Proxy valid for 10:05:15 hours
+DEBUG 2017-06-28 16:30:31,292: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 16:30:31,292: 	 Checking credentials
+DEBUG 2017-06-28 16:30:31,292: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2017-06-28 16:30:31,293: 	 Getting proxy life time left
+DEBUG 2017-06-28 16:30:31,796: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 36314
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 16:30:33,000: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 36313
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 16:30:33,001: 	 Proxy valid for 10:05:14 hours
+DEBUG 2017-06-28 16:30:33,001: 	 Command use: checkusername
+DEBUG 2017-06-28 16:30:33,001: 	 Options use: []
+DEBUG 2017-06-28 16:30:33,001: 	 Instance is None
+DEBUG 2017-06-28 16:30:33,001: 	 Server base url is None
+INFO 2017-06-28 16:30:33,001: 	 Retrieving DN from proxy...
+INFO 2017-06-28 16:30:34,730: 	 DN is: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola
+INFO 2017-06-28 16:30:34,730: 	 Retrieving username from SiteDB...
+INFO 2017-06-28 16:30:38,266: 	 Username is: camendol
+DEBUG 2017-06-28 16:34:52,913: 	 Executing command: 'checkwrite'
+DEBUG 2017-06-28 16:34:52,914: 	 Found CRAB cache file /home/llr/cms/amendola/.crab3
+ERROR 2017-06-28 16:34:52,915: 	 Error: Please specify the site where to check the write permissions. Use the --site option.
+ERROR 2017-06-28 16:34:52,915: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1706/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1706/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1706/lib/python2.7/site-packages/CRABClient/Commands/checkwrite.py", line 22, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1706/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 257, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1706/lib/python2.7/site-packages/CRABClient/Commands/checkwrite.py", line 249, in validateOptions
+    raise ex
+MissingOptionException: [91mError[0m: Please specify the site where to check the write permissions. Use the --site option.
+DEBUG 2017-06-28 17:10:08,671: 	 Executing command: 'checkwrite'
+DEBUG 2017-06-28 17:10:08,671: 	 Found CRAB cache file /home/llr/cms/amendola/.crab3
+ERROR 2017-06-28 17:10:08,684: 	 Error: Please specify the site where to check the write permissions. Use the --site option.
+ERROR 2017-06-28 17:10:08,685: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1706/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1706/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1706/lib/python2.7/site-packages/CRABClient/Commands/checkwrite.py", line 22, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1706/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 257, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1706/lib/python2.7/site-packages/CRABClient/Commands/checkwrite.py", line 249, in validateOptions
+    raise ex
+MissingOptionException: [91mError[0m: Please specify the site where to check the write permissions. Use the --site option.
+DEBUG 2017-06-28 17:11:17,431: 	 Executing command: 'checkwrite'
+DEBUG 2017-06-28 17:11:17,431: 	 Found CRAB cache file /home/llr/cms/amendola/.crab3
+DEBUG 2017-06-28 17:11:17,441: 	 Checking credentials
+DEBUG 2017-06-28 17:11:17,441: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2017-06-28 17:11:17,441: 	 Getting proxy life time left
+DEBUG 2017-06-28 17:11:17,944: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 41247
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 17:11:18,448: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 41246
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 17:11:18,448: 	 Proxy valid for 11:27:27 hours
+DEBUG 2017-06-28 17:11:18,556: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 17:11:18,557: 	 Checking credentials
+DEBUG 2017-06-28 17:11:18,557: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2017-06-28 17:11:18,557: 	 Getting proxy life time left
+DEBUG 2017-06-28 17:11:19,060: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 41246
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 17:11:20,164: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 41244
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 17:11:20,165: 	 Proxy valid for 11:27:26 hours
+DEBUG 2017-06-28 17:11:21,269: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u1027 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2017-06-28 17:11:21,269: 	 Command use: checkwrite
+DEBUG 2017-06-28 17:11:21,269: 	 Options use: ['--site', 'T2_FR_GRIF_LLR']
+DEBUG 2017-06-28 17:11:21,269: 	 Instance is None
+DEBUG 2017-06-28 17:11:21,270: 	 Server base url is None
+DEBUG 2017-06-28 17:11:21,287: 	 Service initialised ({'endpoint': 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/', 'key': '/tmp/x509up_u1027', 'maxcachereuse': 24.0, 'cachepath': '/tmp/.wmcore_cache_c_Qh11/cmsweb.cern.ch', 'inputdata': {}, 'cert': '/tmp/x509up_u1027', 'timeout': 300, 'service_name': 'PhEDEx', 'requests': {'content_type': 'application/x-www-form-urlencoded', 'cacheduration': 0, 'host': 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/', 'accept_type': 'text/html', 'key': '/tmp/x509up_u1027', 'deleteCacheOnExit': <WMCore.Services.Requests.TempDirectory object at 0x7f96d818a310>, 'endpoint_components': ParseResult(scheme='https', netloc='cmsweb.cern.ch', path='/phedex/datasvc/json/prod/', params='', query='', fragment=''), 'endpoint': 'https://cmsweb.cern.ch/phedex/datasvc/json/prod/', 'pycurl': True, 'cachepath': '/tmp/.wmcore_cache_c_Qh11/cmsweb.cern.ch', 'cert': '/tmp/x509up_u1027', 'timeout': 300, 'req_cache_path': '/tmp/.wmcore_cache_c_Qh11/cmsweb.cern.ch/.cache', 'logger': <logging.Logger object at 0x7f96d81736d0>}, 'logger': <logging.Logger object at 0x7f96d81736d0>, 'cacheduration': 0, 'method': None, 'pycurl': True}):
+	 host: cmsweb.cern.ch, basepath: https://cmsweb.cern.ch/phedex/datasvc/json/prod/ (text/html)
+	 cache: /tmp/.wmcore_cache_c_Qh11/cmsweb.cern.ch (duration 0 hours, max reuse 24.0 hours)
+INFO 2017-06-28 17:11:21,288: 	 Will check write permission in the default location /store/user/<username>
+INFO 2017-06-28 17:11:21,288: 	 Retrieving DN from proxy...
+INFO 2017-06-28 17:11:23,093: 	 DN is: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=camendol/CN=784811/CN=Chiara Amendola
+INFO 2017-06-28 17:11:23,093: 	 Retrieving username from SiteDB...
+INFO 2017-06-28 17:11:25,936: 	 Username is: camendol
+INFO 2017-06-28 17:11:25,937: 	 Validating LFN /store/user/camendol...
+INFO 2017-06-28 17:11:25,937: 	 LFN /store/user/camendol is valid.
+INFO 2017-06-28 17:11:25,999: 	 Will use `gfal-copy`, `gfal-rm` commands for checking write permissions
+INFO 2017-06-28 17:11:25,999: 	 Will check write permission in /store/user/camendol on site T2_FR_GRIF_LLR
+DEBUG 2017-06-28 17:11:26,001: 	 getData: 
+	url: lfn2pfn
+	data: {'node': ['T2_FR_GRIF_LLR'], 'custodial': 'n', 'lfn': ['/store/user/camendol/crab3checkwrite_20170628_171125/crab3checkwrite_20170628_171125.tmp'], 'protocol': 'srmv2'}
+INFO 2017-06-28 17:11:26,344: 	 
+Attempting to create (dummy) directory crab3checkwrite_20170628_171125 and copy (dummy) file crab3checkwrite_20170628_171125.tmp to /store/user/camendol
+
+INFO 2017-06-28 17:11:26,348: 	 Executing command: env -i X509_USER_PROXY=/tmp/x509up_u1027 gfal-copy -p -v -t 180 file:///grid_mnt/vol__vol_U__u/llr/cms/amendola/CMSSW_8_0_26_patch1/src/LLRHiggsTauTau/NtupleProducer/test/crab3checkwrite_20170628_171125.tmp 'srm://polgrid4.in2p3.fr:8446/srm/managerv2?SFN=/dpm/in2p3.fr/home/cms/trivcat/store/user/camendol/crab3checkwrite_20170628_171125/crab3checkwrite_20170628_171125.tmp'
+INFO 2017-06-28 17:11:26,348: 	 Please wait...
+INFO 2017-06-28 17:11:28,160: 	 Failed running copy command
+INFO 2017-06-28 17:11:28,160: 	   Stdout:
+    Copying 85 bytes file:///grid_mnt/vol__vol_U__u/llr/cms/amendola/CMSSW_8_0_26_patch1/src/LLRHiggsTauTau/NtupleProducer/test/crab3checkwrite_20170628_171125.tmp => srm://polgrid4.in2p3.fr:8446/srm/managerv2?SFN=/dpm/in2p3.fr/home/cms/trivcat/store/user/camendol/crab3checkwrite_20170628_171125/crab3checkwrite_20170628_171125.tmp
+    event: [1498662687932] BOTH   GFAL2:CORE:COPY	LIST:ENTER	
+    event: [1498662687932] BOTH   GFAL2:CORE:COPY	LIST:ITEM	file:///grid_mnt/vol__vol_U__u/llr/cms/amendola/CMSSW_8_0_26_patch1/src/LLRHiggsTauTau/NtupleProducer/test/crab3checkwrite_20170628_171125.tmp => srm://polgrid4.in2p3.fr:8446/srm/managerv2?SFN=/dpm/in2p3.fr/home/cms/trivcat/store/user/camendol/crab3checkwrite_20170628_171125/crab3checkwrite_20170628_171125.tmp
+    event: [1498662687932] BOTH   GFAL2:CORE:COPY	LIST:EXIT	
+    event: [1498662687934] BOTH   SRM	PREPARE:ENTER	
+    
+INFO 2017-06-28 17:11:28,160: 	   Stderr:
+    WARNING Transfer failed with: DESTINATION MAKE_PARENT srm-ifce err: Permission denied, err: [SE][Mkdir][SRM_AUTHORIZATION_FAILURE] httpg://polgrid4.in2p3.fr:8446/srm/managerv2: srm://polgrid4.in2p3.fr/dpm/in2p3.fr/home/cms/trivcat/store/user/camendol/crab3checkwrite_20170628_171125: Permission denied
+    
+    gfal-copy error: 13 (Permission denied) - DESTINATION MAKE_PARENT srm-ifce err: Permission denied, err: [SE][Mkdir][SRM_AUTHORIZATION_FAILURE] httpg://polgrid4.in2p3.fr:8446/srm/managerv2: srm://polgrid4.in2p3.fr/dpm/in2p3.fr/home/cms/trivcat/store/user/camendol/crab3checkwrite_20170628_171125: Permission denied
+    
+    
+INFO 2017-06-28 17:11:28,161: 	 
+Checkwrite Result:
+INFO 2017-06-28 17:11:28,161: 	 Error: Unable to write in /store/user/camendol on site T2_FR_GRIF_LLR
+       You may want to contact the site administrators sending them the 'crab checkwrite' output as printed above.
+INFO 2017-06-28 17:11:28,161: 	 Note: You cannot write to a site if you did not ask permission.

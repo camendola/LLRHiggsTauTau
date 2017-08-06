@@ -18,6 +18,7 @@ APPLYFSR=False #this is by far the slowest module (not counting SVFit so far)
 #ELECUT="abs(eta)<2.5 && gsfTrack.trackerExpectedHitsInner.numberOfHits<=1 && pt>10"
 #TAUCUT="pt>15"
 #JETCUT="pt>15"
+COMPUTEQGVAR = False # compute QG Tagger for jets
 
 USEPAIRMET=False # input to SVfit: true: MVA pair MET; false: PFmet (HF inclusion set using USE_NOHFMET)
 APPLYMETCORR=False # flag to enable (True) and disable (False) Z-recoil corrections for MVA MET response and resolution

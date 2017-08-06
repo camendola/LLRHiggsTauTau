@@ -113,7 +113,7 @@ process.drawTree = cms.EDAnalyzer("ParticleTreeDrawer",
 
 
 process.printTree = cms.EDAnalyzer("ParticleListDrawer",
-                                   maxEventsToPrint = cms.untracked.int32(-1),
+                                   maxEventsToPrint = cms.untracked.int32(100),
                                    printVertex = cms.untracked.bool(False),
                                    src = cms.InputTag("prunedGenParticles")
                                    )
@@ -860,7 +860,7 @@ process.PVfilter = cms.Path(process.goodPrimaryVertices)
 
 # Prepare lepton collections
 process.Candidates = cms.Sequence(
-    # process.printTree         + # just for debug, print MC particles
+    process.printTree         + # just for debug, print MC particles
     process.nEventsTotal      +
     #process.hltFilter         + 
     process.nEventsPassTrigger+

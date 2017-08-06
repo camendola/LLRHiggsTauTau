@@ -345,12 +345,28 @@ HLTLIST = cms.VPSet(
         leg1 = cms.int32(11),
         leg2 = cms.int32(11)
         ),
-### === single tau triggers
+
+### === bbbb triggers
     cms.PSet (
-        HLT = cms.string("HLT_VLooseIsoPFTau140_Trk50_eta2p1_v"),
-        path1 = cms.vstring ("hltPFTau140TrackPt50LooseAbsOrRelVLooseIso"),
+        HLT = cms.string("HLT_DoubleJet90_Double30_TripleBTagCSV_p087"),
+        path1 = cms.vstring (""), #
         path2 = cms.vstring (""),
-        leg1 = cms.int32(15),
+        leg1 = cms.int32(999),
+        leg2 = cms.int32(999)
+        ),
+    cms.PSet (
+        HLT = cms.string("HLT_QuadJet45_TripleBTagCSV_p087"),
+        path1 = cms.vstring (""), #
+        path2 = cms.vstring (""),
+        leg1 = cms.int32(999),
+        leg2 = cms.int32(999)
+        ),
+### === bbgg triggers
+    cms.PSet (
+        HLT = cms.string("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90"),
+        path1 = cms.vstring (""), #
+        path2 = cms.vstring (""),
+        leg1 = cms.int32(999),
         leg2 = cms.int32(999)
         ),
     )

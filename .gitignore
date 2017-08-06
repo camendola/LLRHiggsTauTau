@@ -5,4 +5,7 @@
 *.h~
 *.cc.1
 *.root
+*.png
+*.pdf
+*~
 JobLauncher*/
