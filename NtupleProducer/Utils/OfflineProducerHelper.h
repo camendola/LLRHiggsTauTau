@@ -41,8 +41,8 @@ class OfflineProducerHelper {
 
   OfflineProducerHelper();
   int FindTriggerNumber(TString triggername);
-  bool IsTriggerFired(int triggerbit, int triggerNumber);
-  bool IsTriggerFired(int triggerbit, TString triggerName){return IsTriggerFired(triggerbit, FindTriggerNumber(triggerName));}
+  bool IsTriggerFired(Long64_t triggerbit, int triggerNumber);
+  bool IsTriggerFired(Long64_t triggerbit, TString triggerName){return IsTriggerFired(triggerbit, FindTriggerNumber(triggerName));}
   int printFiredPaths(int);
   bool isMuon(int type){if(type == MUON)return true; else return false;}
   bool isElectron(int type){if(type == ELECTRON)return true; else return false;}
@@ -130,12 +130,12 @@ int OfflineProducerHelper::FindTriggerNumber(TString triggername){
   return -1;
 }
 
-bool OfflineProducerHelper::IsTriggerFired(int triggerbit, int triggernumber){ 
+bool OfflineProducerHelper::IsTriggerFired(Long64_t triggerbit, int triggernumber){ 
   if(triggernumber>=0 && triggernumber<nTriggers) return triggerbit & (1 << triggernumber);
   return false;
 }
 
-int OfflineProducerHelper::printFiredPaths(int triggerbit){
+int OfflineProducerHelper::printFiredPaths(Long64_t triggerbit){
   int nFired = 0;
   for(int it=0;it<nTriggers;it++){ 	
   	if(IsTriggerFired(triggerbit,it)) {
