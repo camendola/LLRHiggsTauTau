@@ -107,7 +107,7 @@ void triggerhelper::addTriggerMap(string hlt,vector<string> path1, vector<string
   triggerMap.push_back(map);
 }
 
-Long64_t triggerhelper::FindTriggerBit(const edm::Event& event, const vector<string> foundPaths, const vector<int> indexOfPaths, const edm::Handle<edm::TriggerResults>& triggerResults){
+
   
   Long64_t bit =0;
   
@@ -209,7 +209,6 @@ bool triggerhelper::IsTriggerFired(Long64_t triggerbit, int triggernumber, bool 
   int nLoop = triggerlist.size();
   if(!isTrigger)nLoop = nMETs;
   Long64_t bit =1;
-  //  cout<<"triggernumber "<<triggernumber<<" triggerbit "<<triggerbit<<" triggerbit & (1 << triggernumber) "<<check<<endl;
   if(triggernumber>=0 && triggernumber<nLoop) return triggerbit & (bit << triggernumber);
   return false;
 }
