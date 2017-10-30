@@ -128,6 +128,7 @@
    bool writeSoftLep = false;
    bool DEBUG = false;
    bool writeStage2 = true;
+   int DETAIL=1;
  }
 
 using namespace std;
@@ -712,9 +713,12 @@ HTauTauNtuplizer::HTauTauNtuplizer(const edm::ParameterSet& pset) : reweight(),
   thePassTag           (consumes<edm::MergeableCounter, edm::InLumi>     (pset.getParameter<edm::InputTag>("passCollection"))),
   theLHEPTag           (consumes<LHEEventProduct>                        (pset.getParameter<edm::InputTag>("lhepCollection"))),
   beamSpotTag          (consumes<reco::BeamSpot>                         (pset.getParameter<edm::InputTag>("beamSpot"))),
+  theStage2TauTag      (consumes<BXVector<l1t::Tau>>                     (pset.getParameter<edm::InputTag>("stage2TauCollection"))),
+  theStage2EGammaTag   (consumes<BXVector<l1t::EGamma>>                  (pset.getParameter<edm::InputTag>("stage2EGammaCollection"))),
+  theStage2MuonTag     (consumes<BXVector<l1t::Muon>>                    (pset.getParameter<edm::InputTag>("stage2MuonCollection"))),
+  theStage2JetTag      (consumes<BXVector<l1t::Jet>>                     (pset.getParameter<edm::InputTag>("stage2JetCollection"))),
   theNBadMuTag         (consumes<int>                                    (pset.getParameter<edm::InputTag>("nBadMu"))),
   genLumiHeaderTag     (consumes<GenLumiInfoHeader, edm::InLumi>         (pset.getParameter<edm::InputTag>("genLumiHeaderTag")))
-
 
  {
   theFileName = pset.getUntrackedParameter<string>("fileName");
@@ -2046,11 +2050,8 @@ int* HTauTauNtuplizer::FillStage2(const BXVector<l1t::Tau>* taus, const BXVector
     {
       for (BXVector<l1t::Tau>::const_iterator it=taus->begin(ibx); it!=taus->end(ibx); it++)
 	{
-          if (it->pt() > 0){
+          if (it->pt() > 0 && ibx ==0){
             nObj[0]++;
-	    //cout<<it->isMerged()<<endl;
-	    //cout<<"  "<<it->isoEt()<<endl;
-
             _stage2_tauEt .push_back(it->et());
             _stage2_tauEta.push_back(it->eta());
             _stage2_tauPhi.push_back(it->phi());
@@ -2066,7 +2067,7 @@ int* HTauTauNtuplizer::FillStage2(const BXVector<l1t::Tau>* taus, const BXVector
     {
       for (BXVector<l1t::EGamma>::const_iterator it=egs->begin(ibx); it!=egs->end(ibx); it++)
         {
-          if (it->pt() > 0){
+          if (it->pt() > 0&& ibx ==0){
             nObj[1]++;
             _stage2_egEt .push_back(it->et());
             _stage2_egEta.push_back(it->eta());
@@ -2083,7 +2084,7 @@ int* HTauTauNtuplizer::FillStage2(const BXVector<l1t::Tau>* taus, const BXVector
     {
       for (BXVector<l1t::Jet>::const_iterator it=jets->begin(ibx); it!=jets->end(ibx); it++)
         {
-          if (it->pt() > 0){
+          if (it->pt() > 0&& ibx ==0){
             nObj[2]++;
             _stage2_jetEt .push_back(it->et());
             _stage2_jetEta.push_back(it->eta());
@@ -2099,7 +2100,7 @@ int* HTauTauNtuplizer::FillStage2(const BXVector<l1t::Tau>* taus, const BXVector
     {
       for (BXVector<l1t::Muon>::const_iterator it=muons->begin(ibx); it!=muons->end(ibx); it++)
         {
-          if (it->pt() > 0){
+          if (it->pt() > 0&& ibx ==0){
             nObj[3]++;
             _stage2_muonEt .push_back(it->et());
             _stage2_muonEta.push_back(it->eta());
