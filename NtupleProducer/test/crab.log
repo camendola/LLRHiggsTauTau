@@ -1,0 +1,74 @@
+DEBUG 2016-11-29 11:56:32,561: 	 Executing command: 'submit'
+DEBUG 2016-11-29 11:56:32,561: 	 Found CRAB cache file /home/llr/cms/amendola/.crab3
+DEBUG 2016-11-29 11:56:32,581: 	 Checking credentials
+DEBUG 2016-11-29 11:56:32,581: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2016-11-29 11:56:32,581: 	 Getting proxy life time left
+DEBUG 2016-11-29 11:56:33,084: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 42855
+
+ error: 
+ retcode : 0
+DEBUG 2016-11-29 11:56:33,588: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 42855
+
+ error: 
+ retcode : 0
+DEBUG 2016-11-29 11:56:33,588: 	 Proxy valid for 11:54:15 hours
+INFO 2016-11-29 11:56:33,588: 	 Will use CRAB configuration file crab3_templateHH.py
+DEBUG 2016-11-29 11:56:33,589: 	 Loading CRAB configuration file.
+DEBUG 2016-11-29 11:56:33,590: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+ERROR 2016-11-29 11:56:33,591: 	 Working area '/grid_mnt/vol__vol_U__u/llr/cms/amendola/CMSSW_8_0_20/src/LLRHiggsTauTau/NtupleProducer/test/DefaultCrab3Area/crab_DefaultReqName' already exists 
+Please change the requestName in the config file
+ERROR 2016-11-29 11:56:33,591: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1611-comp/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1611-comp/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1611-comp/lib/python2.7/site-packages/CRABClient/Commands/submit.py", line 34, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1611-comp/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 302, in __init__
+    getattr(self.configuration.General, 'requestName', None))
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1611-comp/lib/python2.7/site-packages/CRABClient/ClientUtilities.py", line 394, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+ConfigException: Working area '/grid_mnt/vol__vol_U__u/llr/cms/amendola/CMSSW_8_0_20/src/LLRHiggsTauTau/NtupleProducer/test/DefaultCrab3Area/crab_DefaultReqName' already exists 
+Please change the requestName in the config file
+DEBUG 2016-11-29 18:23:14,154: 	 Executing command: 'submit'
+DEBUG 2016-11-29 18:23:14,170: 	 Found CRAB cache file /home/llr/cms/amendola/.crab3
+DEBUG 2016-11-29 18:23:14,189: 	 Checking credentials
+DEBUG 2016-11-29 18:23:14,189: 	 Found proxy file /tmp/x509up_u1027
+DEBUG 2016-11-29 18:23:14,189: 	 Getting proxy life time left
+DEBUG 2016-11-29 18:23:14,693: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -timeleft
+ output : 43167
+
+ error: 
+ retcode : 0
+DEBUG 2016-11-29 18:23:15,297: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1027 -actimeleft
+ output : 43166
+
+ error: 
+ retcode : 0
+DEBUG 2016-11-29 18:23:15,297: 	 Proxy valid for 11:59:27 hours
+INFO 2016-11-29 18:23:15,297: 	 Will use CRAB configuration file crab3_templateHH.py
+DEBUG 2016-11-29 18:23:15,297: 	 Loading CRAB configuration file.
+DEBUG 2016-11-29 18:23:15,299: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+ERROR 2016-11-29 18:23:15,312: 	 Working area '/grid_mnt/vol__vol_U__u/llr/cms/amendola/CMSSW_8_0_20/src/LLRHiggsTauTau/NtupleProducer/test/DefaultCrab3Area/crab_GluGluToRadionToHHTo2B2Tau_M-250' already exists 
+Please change the requestName in the config file
+ERROR 2016-11-29 18:23:15,312: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1611-comp/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1611-comp/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1611-comp/lib/python2.7/site-packages/CRABClient/Commands/submit.py", line 34, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1611-comp/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 302, in __init__
+    getattr(self.configuration.General, 'requestName', None))
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1611-comp/lib/python2.7/site-packages/CRABClient/ClientUtilities.py", line 394, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+ConfigException: Working area '/grid_mnt/vol__vol_U__u/llr/cms/amendola/CMSSW_8_0_20/src/LLRHiggsTauTau/NtupleProducer/test/DefaultCrab3Area/crab_GluGluToRadionToHHTo2B2Tau_M-250' already exists 
+Please change the requestName in the config file

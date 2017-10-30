@@ -31,9 +31,9 @@ doCPVariables=False # compute CP variables and PV refit
 COMPUTEQGVAR = False # compute QG Tagger for jets
 IsMC=True
 Is25ns=True
-HLTProcessName='HLT' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.
+HLTProcessName='HLT2' #Different names possible, check e.g. at https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD.
 if not IsMC:
-    HLTProcessName='HLT' #It always 'HLT' for real data
+    HLTProcessName='HLT2' #It always 'HLT' for real data
 print "HLTProcessName: ",HLTProcessName
 
 #relaxed sets for testing purposes
