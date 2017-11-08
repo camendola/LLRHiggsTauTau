@@ -28,6 +28,9 @@ BUILDONLYOS=False #If true don't create the collection of SS candidates (and thu
 APPLYTESCORRECTION=False # shift the central value of the tau energy scale before computing up/down variations
 COMPUTEUPDOWNSVFIT=False # compute SVfit for up/down TES variation
 
+doCPVariables=False
+COMPUTEQGVAR = False
+
 IsMC=XXX_ISMC_XXX
 Is25ns=True
 

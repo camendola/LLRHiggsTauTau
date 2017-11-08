@@ -40,7 +40,7 @@ except NameError:
 
 try: HLTProcessName
 except NameError:
-    HLTProcessName='RECO'
+    HLTProcessName='HLT'
 
 ### ----------------------------------------------------------------------
 ### Set the GT
