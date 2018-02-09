@@ -8,6 +8,25 @@ import re
 ###################################################################
 #### Parameters to be changed for each production
 
+#PROCESS = ["DATA7FEBH"]
+#tag = "Data_03FEB2017ReReco_17Nov2017_runH"
+#datasetsFile = "datasets.txt"
+
+#PROCESS = ["DATA7FEBBG"]
+#tag = "Data_03FEB2017ReReco_22Feb2017_runBG"
+#datasetsFile = "datasets.txt"
+
+#PROCESS = ["VBF_Signal"]
+#tag = "MC_VBF_Signal_Summer16"
+#datasetsFile = "datasetVBF.txt"
+
+PROCESS = ["singleTop"]
+tag = "MC_VBF_Summer16_singleTop"
+datasetsFile = "datasetVBF.txt"
+
+#PROCESS = ["VBF_Chiara"]
+#tag = "MC_VBF_Summer16"
+#datasetsFile = "datasetVBF.txt"
 
 #PROCESS = ["HHBACKGROUNDS"]
 #tag = "llrNt_NoSVFit_bkg_27Ago2015"
@@ -157,9 +176,9 @@ import re
 #tag = "MC_gravitons_24Apr2017"
 #datasetsFile = "datasets.txt"
 
-PROCESS = ["MC80XRSGRAVITON"]
-tag = "MC_gravitonsRS_29Apr2017"
-datasetsFile = "datasets.txt"
+#PROCESS = ["MC80XRSGRAVITON"]
+#tag = "MC_gravitonsRS_29Apr2017"
+#datasetsFile = "datasets.txt"
 
 isMC = True
 #twiki page with JSON files info https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2015Analysis
@@ -291,7 +310,7 @@ for dtset in dtsetToLaunch:
     command += " General.requestName=%s" % (shortName + "_" + str(counter))
     command += " General.workArea=%s" % crabJobsFolder
     command += " Data.inputDataset=%s" % dtset
-    command += " Data.outLFNDirBase=/store/user/lcadamur/HHNtuples/%s/%s" % (tag , str(counter)+"_"+dtsetNames)
+    command += " Data.outLFNDirBase=/store/user/camendol/HHNtuples/%s/%s" % (tag , str(counter)+"_"+dtsetNames)
     command += " Data.outputDatasetTag=%s" % (shortName + "_" + tag + "_" + str(counter))
     if (EnrichedToNtuples): command += " Data.inputDBS=phys03" # if I published the dataset need to switch from global (default)
     if (EnrichedToNtuples): command += " JobType.psetName=ntuplizer.py" # run a different python config for enriched
