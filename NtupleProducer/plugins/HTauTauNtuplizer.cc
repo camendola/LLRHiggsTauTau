@@ -258,6 +258,25 @@ class HTauTauNtuplizer : public edm::EDAnalyzer {
   Float_t _MC_weight;
   Float_t _aMCatNLOweight;
   Int_t _npv;
+  
+  Float_t _lhe_H1_px;
+  Float_t _lhe_H1_py;
+  Float_t _lhe_H1_pz;
+  Float_t _lhe_H1_e;
+  Float_t _lhe_H2_px;
+  Float_t _lhe_H2_py;
+  Float_t _lhe_H2_pz;
+  Float_t _lhe_H2_e;
+  Float_t _lhe_qout1_px;
+  Float_t _lhe_qout1_py;
+  Float_t _lhe_qout1_pz;
+  Float_t _lhe_qout1_e;
+  Float_t _lhe_qout2_px;
+  Float_t _lhe_qout2_py;
+  Float_t _lhe_qout2_pz;
+  Float_t _lhe_qout2_e;
+
+  
   Float_t _lheHt;
   Int_t   _lheNOutPartons;
   Int_t   _lheNOutB;
@@ -982,6 +1001,29 @@ void HTauTauNtuplizer::Initialize(){
   _PFMETsignif=0.;
   _MC_weight=0.;
   _npv=0;
+  
+  _lhe_qout1_px=0.;
+  _lhe_qout1_py=0.;
+  _lhe_qout1_pz=0.;
+  _lhe_qout1_e= 0.;
+
+  _lhe_qout2_px=0.;
+  _lhe_qout2_py=0.;
+  _lhe_qout2_pz=0.;
+  _lhe_qout2_e= 0.;
+
+  _lhe_H1_px=0.;
+  _lhe_H1_py=0.;
+  _lhe_H1_pz=0.;
+  _lhe_H1_e= 0.;
+
+  _lhe_H2_px=0.;
+  _lhe_H2_py=0.;
+  _lhe_H2_pz=0.;
+  _lhe_H2_e= 0.;
+
+
+  
   _lheHt=0;
   _lheNOutPartons=0;
   _lheNOutB=0;
@@ -1162,7 +1204,24 @@ void HTauTauNtuplizer::beginJob(){
     myTree->Branch("MC_weight_scale_muF2",&_MC_weight_scale_muF2,"MC_weight_scale_muF2/F");
     myTree->Branch("MC_weight_scale_muR0p5",&_MC_weight_scale_muR0p5,"MC_weight_scale_muR0p5/F");
     myTree->Branch("MC_weight_scale_muR2",&_MC_weight_scale_muR2,"MC_weight_scale_muR2/F");
-    myTree->Branch("lheHt",&_lheHt,"lheHt/F");  
+    myTree->Branch("lhe_H1_px",&_lhe_H1_px,"lhe_H1_px/F");
+    myTree->Branch("lhe_H1_py",&_lhe_H1_py,"lhe_H1_py/F");
+    myTree->Branch("lhe_H1_pz",&_lhe_H1_pz,"lhe_H1_pz/F");
+    myTree->Branch("lhe_H1_e",&_lhe_H1_e,"lhe_H1_e/F");
+    myTree->Branch("lhe_H2_px",&_lhe_H2_px,"lhe_H2_px/F");
+    myTree->Branch("lhe_H2_py",&_lhe_H2_py,"lhe_H2_py/F");
+    myTree->Branch("lhe_H2_pz",&_lhe_H2_pz,"lhe_H2_pz/F");
+    myTree->Branch("lhe_H2_e",&_lhe_H2_e,"lhe_H2_e/F");
+    myTree->Branch("lhe_qout1_px",&_lhe_qout1_px,"lhe_qout1_px/F");
+    myTree->Branch("lhe_qout1_py",&_lhe_qout1_py,"lhe_qout1_py/F");
+    myTree->Branch("lhe_qout1_pz",&_lhe_qout1_pz,"lhe_qout1_pz/F");
+    myTree->Branch("lhe_qout1_e",&_lhe_qout1_e,"lhe_qout1_e/F");
+    myTree->Branch("lhe_qout2_px",&_lhe_qout2_px,"lhe_qout2_px/F");
+    myTree->Branch("lhe_qout2_py",&_lhe_qout2_py,"lhe_qout2_py/F");
+    myTree->Branch("lhe_qout2_pz",&_lhe_qout2_pz,"lhe_qout2_pz/F");
+    myTree->Branch("lhe_qout2_e",&_lhe_qout2_e,"lhe_qout2_e/F");
+    
+    myTree->Branch("lheHt",&_lheHt,"lheHt/F");
     myTree->Branch("lheNOutPartons", &_lheNOutPartons, "lheNOutPartons/I");
     myTree->Branch("lheNOutB", &_lheNOutB, "lheNOutB/I");
     myTree->Branch("lheNOutC", &_lheNOutC, "lheNOutC/I");
@@ -1481,15 +1540,21 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
     try {event.getByToken(theLHEPTag, lheEventProduct);} catch (...) {;}
     if (lheEventProduct.isValid())
     {
+
       const lhef::HEPEUP& lheEvent = lheEventProduct->hepeup();
       std::vector<lhef::HEPEUP::FiveVector> lheParticles = lheEvent.PUP;
+      std::vector<std::pair<int, int> > lheMother = lheEvent.MOTHUP;
       double lheHt = 0.;
       int lheNOutPartons = 0;
       int lheNOutB = 0;
       int lheNOutC = 0;
-      size_t numParticles = lheParticles.size();
-      for ( size_t idxParticle = 0; idxParticle < numParticles; ++idxParticle ) {
+      //      size_t numParticles = lheParticles.size();
+      int numParticles = lheEvent.NUP;
+      std::vector<int> idxH;
+      std::vector<int> idxVBF;
+      for ( int idxParticle = 0; idxParticle < numParticles; ++idxParticle ) {
         int absPdgId = TMath::Abs(lheEvent.IDUP[idxParticle]);
+	int pdgId = lheEvent.IDUP[idxParticle];
         int status = lheEvent.ISTUP[idxParticle];
         if ( status == 1 && ((absPdgId >= 1 &&  absPdgId<= 6) ||  absPdgId== 21) ) { // quarks and gluons
             // cout << "DEBUG: APDGID: " << absPdgId << endl;
@@ -1498,7 +1563,58 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
             if (absPdgId == 5) ++lheNOutB ;
             if (absPdgId == 4) ++lheNOutC ;
         }
+	//	cout<<"idx "<<idxParticle<<" status "<<status<<" pdg "<<pdgId<<" mother1 "<<lheMother[idxParticle].first<<" mother2 "<<lheMother[idxParticle].second<<endl;  
+	bool fromPP = false;
+	if(lheMother[idxParticle].first == 1 && lheMother[idxParticle].second == 2) fromPP = true;
+
+	if (status == 1 && absPdgId ==25 && fromPP) { //Higgs
+	  if (idxH.size()>1) cout<<"### WARNING! more than 2 H at LHE level"<<endl;
+	    idxH.push_back(idxParticle);	    
+	}
+
+	if (status == 1 &&  (absPdgId >= 1 &&  absPdgId<= 6)  && fromPP) { //VBF jets
+
+	  if (idxVBF.size()>1) cout<<"### WARNING! more than 2 VBF jets at LHE level"<<endl;
+	    idxVBF.push_back(idxParticle);	    
+	}
+
+	
+	
       }
+      if (idxH.size() == 2 ) { 
+	int idx1 = idxH[0];
+	int idx2 = idxH[1];            
+	
+	_lhe_H1_px = lheParticles[idx1][0];
+	_lhe_H1_py = lheParticles[idx1][1];
+	_lhe_H1_pz = lheParticles[idx1][2];
+	_lhe_H1_e = lheParticles[idx1][3];
+
+	_lhe_H2_px = lheParticles[idx2][0];
+	_lhe_H2_py = lheParticles[idx2][1];
+	_lhe_H2_pz = lheParticles[idx2][2];
+	_lhe_H2_e = lheParticles[idx2][3];
+	
+      }
+	
+	if (idxVBF.size() == 2 ) {
+	  int idx1 = idxVBF[0];
+	  int idx2 = idxVBF[1];            
+	  _lhe_qout1_px = lheParticles[idx1][0];
+	  _lhe_qout1_py = lheParticles[idx1][1];
+	  _lhe_qout1_pz = lheParticles[idx1][2];
+	  _lhe_qout1_e = lheParticles[idx1][3];
+	  
+	  _lhe_qout2_px = lheParticles[idx2][0];
+	  _lhe_qout2_py = lheParticles[idx2][1];
+	_lhe_qout2_pz = lheParticles[idx2][2];
+	_lhe_qout2_e = lheParticles[idx2][3];
+	
+      }
+
+    
+
+  
        _lheHt = lheHt;
        _lheNOutPartons = lheNOutPartons;
        _lheNOutB = lheNOutB;
@@ -1594,7 +1710,7 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
   //myNtuple->InitializeVariables();
     
   _indexevents = event.id().event();
-  cout<<"event number "<<_indexevents<<endl;
+
   _runNumber = event.id().run();
   _lumi=event.luminosityBlock();
   // _met = met.sumEt(); // scalar sum of the pf candidates
@@ -1625,11 +1741,11 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
       bool isLast      = _genpart_flags.at(igen) & (1 << 13) ; // 13 = isLastCopy
       bool isPrompt      = _genpart_flags.at(igen) & (1 << 0); // 0 = isPrompt
       int pdg = _genpart_pdg.at(igen);
-      bool bToMuon = false; 
-      if (fabs(pdg)==13){	  
-	bToMuon = (isLast && (_genpart_flags.at(igen) & (1 << 6)) && !isPrompt);
-      }
-      if(fabs(pdg)  == 13){
+      // bool bToMuon = false; 
+      // if (fabs(pdg)==13){	  
+      //	bToMuon = (isLast && (_genpart_flags.at(igen) & (1 << 6)) && !isPrompt);
+      // }
+      /*   if(fabs(pdg)  == 13){
 	  cout<<"event "<<_indexevents<<endl;
 	  cout<<_genpart_px.at(igen)<<" "<<_genpart_py.at(igen)<<" "<<_genpart_pz.at(igen)<<endl;
 	  cout<<"isLast "<<isLast<<endl;
@@ -1637,7 +1753,7 @@ void HTauTauNtuplizer::analyze(const edm::Event& event, const edm::EventSetup& e
 	  cout<<"isDirect "<<(_genpart_flags.at(igen) & (1 << 6))<<endl;
 	  cout<<"pdg "<<pdg<<endl;
 	  cout<<"btomu "<<bToMuon<<endl;
-      }
+	  }*/
     }
 
   }
@@ -2797,7 +2913,7 @@ void HTauTauNtuplizer::FillGenInfo(const edm::Event& event)
 	}
     }
 
-    cout<<"size "<<_genpart_px.size()<<endl;
+
 }
 
 

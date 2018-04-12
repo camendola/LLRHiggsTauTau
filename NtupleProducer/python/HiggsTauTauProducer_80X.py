@@ -860,7 +860,7 @@ process.PVfilter = cms.Path(process.goodPrimaryVertices)
 
 # Prepare lepton collections
 process.Candidates = cms.Sequence(
-    process.printTree         + # just for debug, print MC particles
+#    process.printTree         + # just for debug, print MC particles
     process.nEventsTotal      +
     #process.hltFilter         + 
     process.nEventsPassTrigger+
